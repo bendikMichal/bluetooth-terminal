@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 import Navbar from './components/navbar';
 import Sidebar from './components/Sidebar';
+import { getColor } from './consts/theme';
 
 
 export default function App() {
@@ -13,7 +14,7 @@ export default function App() {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       <Navbar 
         title="Veri gud blutut epp"
         toggleSidebar={toggleSidebar}
@@ -22,6 +23,18 @@ export default function App() {
       <Sidebar 
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        menuItems={[
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+        ]}
       />
     </View>
   );
@@ -30,6 +43,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: getColor("bg"),
   },
 });

@@ -13,4 +13,4 @@ export const width = Dimensions.get('window').width;
 export const height = Dimensions.get('window').height;
 
 export const sidebarW = width * 0.75;
-export const sidebarLayer = 10;
+export const sidebarLayer = -10;

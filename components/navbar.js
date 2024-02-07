@@ -20,6 +20,7 @@ const Navbar = (props) => {
       <Button 
         onPress={props.toggleSidebar}
         buttonName="menu"
+        buttonColor={getColor("title")}
         background={false}
       /> 
 
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     // monospace, serif
     fontFamily: "Roboto",
     fontSize: 20,
-    color: getColor("text"),
+    color: getColor("title"),
     fontWeight: "bold",
     textAlignVertical: 'center'
   }

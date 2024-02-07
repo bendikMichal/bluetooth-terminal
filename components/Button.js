@@ -21,6 +21,7 @@ export default function Button({
   customStyles: customStyles,
   textStyles: textStyles,
   subTextStyles: subTextStyles,
+  buttonColor: buttonColor,
 
 } = props) {
 
@@ -47,6 +48,7 @@ export default function Button({
     ["zoom-in"]: require("./../assets/buttons/zoom-in.png"),
     ["zoom-out"]: require("./../assets/buttons/zoom-out.png"),
     ["menu"]: require("./../assets/buttons/menu.png"),
+    ["terminal"]: require("./../assets/buttons/terminal.png"),
   };
 
   return (
@@ -62,7 +64,7 @@ export default function Button({
       activeOpacity={noOpacity ? 1 : 0.5}
       onPress={onPress}
     >
-      <Image
+      { ( buttonName || uriImage ) && <Image
         style={[
           styles.image,
           {
@@ -79,14 +81,14 @@ export default function Button({
               }
             : images[buttonName]
         }
-        tintColor={uriImage ? null : getColor("text")}
-      ></Image>
+        tintColor={uriImage ? null : buttonColor ?? getColor("text")}
+      />}
       <View>
         {textActive && (
           <Text
             style={[
               {
-                color: getColor("secondary"),
+                color: getColor("text"),
               },
               textStyles,
             ]}
@@ -98,7 +100,7 @@ export default function Button({
           <Text
             style={[
               {
-                color: getColor("secondary"),
+                color: getColor("text"),
               },
               subTextStyles,
             ]}
