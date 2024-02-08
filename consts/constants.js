@@ -14,3 +14,5 @@ export const height = Dimensions.get('window').height;
 
 export const sidebarW = width * 0.75;
 export const sidebarLayer = -10;
+
+export const rootLayer = -20;
