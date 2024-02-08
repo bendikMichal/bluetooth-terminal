@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { getColor } from "../consts/theme";
 
 import Button from './Button';
+import { styles } from '../consts/theme';      
 
 // @props
 //   title: string
@@ -33,29 +34,7 @@ const Navbar = (props) => {
   );
 }
 
-const styles = StyleSheet.create({
-  viewStyle: {
-    backgroundColor: getColor("fg"),
-    padding: 4,
-    paddingTop: 32,
-    position: "absolute",
-    top: 0,
-    width: "100%",
-    minHeight: 64,
-    // alignItems: "left",
-    justifyContent: "left",
-    flexDirection: "row"
-  },
 
-  title: {
-    // monospace, serif
-    fontFamily: "Roboto",
-    fontSize: 20,
-    color: getColor("title"),
-    fontWeight: "bold",
-    textAlignVertical: 'center'
-  }
-});
 
 export default Navbar;
 

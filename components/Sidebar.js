@@ -2,10 +2,9 @@
 import { StyleSheet, View, Text, Animated } from "react-native";
 import { useEffect, useRef, useState } from "react";
 
-import { sidebarLayer, sidebarW, height } from "../consts/constants";
-import { getColor } from "../consts/theme";
+import { sidebarW } from "../consts/constants";
+import { styles } from "../consts/theme";
 
-import Button from "./Button";
 import useAnimated from "../utils/useAnimated";
 import MenuItem from "./MenuItem";
 
@@ -35,34 +34,10 @@ const Sidebar = (props) => {
   if (!props.open && value <= 0) return <></>;
   return (
     <Animated.View style={[styles.sidebar, { left: (-sidebarW * (1 - value)) ?? 0 }]}>
-      {/* <Button 
-        onPress={props.onClose}
-        buttonName="arrow"
-        background={false}
-      /> */}
       {buildMenu()}
     </Animated.View>
   );
 
 }
-
-const styles = StyleSheet.create({
-  sidebar: {
-    backgroundColor: getColor("secondary"),
-    position: "absolute",
-    top: 91,
-    left: 0,
-    width: sidebarW,
-    height: "100%",
-    zIndex: sidebarLayer,
-    padding: 4,
-    paddingTop: 32,
-    borderTopRightRadius: 24,
-    borderBottomRightRadius: 24,
-    borderWidth: 2,
-    borderLeftWidth: 0,
-    borderColor: getColor("text")
-  },
-});
 
 export default Sidebar;

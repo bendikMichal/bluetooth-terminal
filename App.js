@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 
 import Navbar from './components/Navbar';
@@ -12,11 +12,12 @@ import Devices from './components/Devices';
 import Settings from './components/Settings';
 import Info from './components/Info';
 
-import { getColor } from './consts/theme';
+import { styles } from './consts/theme';
 
 export default function App() {
   const [ sidebarOpen, setSidebarOpen ] = useState(false);
   const [ route, setRoute ] = useState("/");
+  const [ refresh, setRefresh ] = useState(false);
 
   const handleChangeRoute = (item) => setRoute(item.route);
 
@@ -27,6 +28,7 @@ export default function App() {
       <Navbar 
         title="Veri gud blutut epp"
         toggleSidebar={toggleSidebar}
+        refresh={refresh}
       />
 
       <Sidebar 
@@ -40,24 +42,20 @@ export default function App() {
           { title: "Settings", route: "/Settings", icon: "settings" },
           { title: "Info", route: "/Info", icon: "info" },
         ]}
+        refresh={refresh}
       />
 
       <Navigation 
         route={route}
         routes={[
-          <Terminal route="/Terminal" key="0"/>,
-          <Devices route="/Devices" key="1"/>,
-          <Settings route="/Settings" key="2"/>,
-          <Info route="/Info" key="3"/>,
+          <Terminal route="/Terminal" refresh={refresh} key="0"/>,
+          <Devices route="/Devices" refresh={refresh} key="1"/>,
+          <Settings route="/Settings" setRefresh={setRefresh} refresh={refresh} key="2"/>,
+          <Info route="/Info" refresh={refresh} key="3"/>,
         ]}
+        refresh={refresh}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: getColor("bg"),
-  },
-});
