@@ -8,20 +8,25 @@ import Button from "./Button";
 //   title: string
 //   route: string
 //   icon: string
+//   onPress: fn
+//   activeRoute: string
 
 const MenuItem = (props) => {
 
+  const isActive = () => props.route === props.activeRoute;
+
   return (
-    <View style={[styles.wrap, props.id == 2 && { borderColor: "#4936572a", borderBottomWidth: 2, borderRightWidth: 0 }]} >
+    <View style={[styles.wrap, isActive() && { borderRadius: 12, marginLeft: 24 }]} >
       <Button 
         text={props.title}
         customStyles={styles.menuItem}
         textStyles={styles.text}
         buttonName={props.icon}
         background={false}
+        onPress={props.onPress}
       />
 
-      {props.id == 2 && <View style={styles.activeDot} />}
+      { isActive() && <View style={styles.activeDot} />}
     </View>
   );
 }
@@ -31,13 +36,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 12,
     justifyContent: "left",
-    flexDirection: "row"
+    flexDirection: "row",
   },
+
   activeDot: {
     backgroundColor: getColor("text"),
     width: 4,
     marginRight: 4,
-    height: 32,
+    height: 24,
     borderRadius: 8,
 
     alignSelf: "center"

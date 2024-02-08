@@ -49,6 +49,9 @@ export default function Button({
     ["zoom-out"]: require("./../assets/buttons/zoom-out.png"),
     ["menu"]: require("./../assets/buttons/menu.png"),
     ["terminal"]: require("./../assets/buttons/terminal.png"),
+    ["devices"]: require("./../assets/buttons/devices.png"),
+    ["settings"]: require("./../assets/buttons/settings.png"),
+    ["info"]: require("./../assets/buttons/info.png"),
   };
 
   return (

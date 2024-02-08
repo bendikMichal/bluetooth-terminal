@@ -10,6 +10,9 @@ import { getColor } from './consts/theme';
 
 export default function App() {
   const [ sidebarOpen, setSidebarOpen ] = useState(false);
+  const [ route, setRoute ] = useState("/");
+
+  const handleChangeRoute = (item) => setRoute(item.route);
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
 
@@ -23,17 +26,13 @@ export default function App() {
       <Sidebar 
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        route={route}
+        setRoute={handleChangeRoute}
         menuItems={[
           { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Terminal", route: "/Terminal", icon: "terminal" },
+          { title: "Devices", route: "/Devices", icon: "devices" },
+          { title: "Settings", route: "/Settings", icon: "settings" },
+          { title: "Info", route: "/Info", icon: "info" },
         ]}
       />
     </View>

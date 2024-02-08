@@ -13,16 +13,23 @@ import MenuItem from "./MenuItem";
 //   open: bool
 //   menuItems: List<ReactComponent>
 //   onClose: fn
+//   route: string
+//   setRoute: fn
 
 const Sidebar = (props) => {
   const [ value, setValue ] = useState(0);
   const startValueAnimation = useAnimated(value, setValue);
-  
+
   useEffect(() => {
     startValueAnimation(1 * props.open, 250);
   }, [props.open]);
 
-  const buildMenu = () => props.menuItems?.map((item, index) => <MenuItem key={index} id={index} {...item} />);
+  const buildMenu = () => props.menuItems?.map((item, index) => <MenuItem 
+                                    key={index} 
+                                    id={index} 
+                                    activeRoute={props.route}
+                                    onPress={() => props.setRoute(item)} 
+                                    {...item} />);
 
 
   if (!props.open && value <= 0) return <></>;
@@ -50,6 +57,11 @@ const styles = StyleSheet.create({
     zIndex: sidebarLayer,
     padding: 4,
     paddingTop: 32,
+    borderTopRightRadius: 24,
+    borderBottomRightRadius: 24,
+    borderWidth: 2,
+    borderLeftWidth: 0,
+    borderColor: getColor("text")
   },
 });
 
