@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 
 // import BleManager from 'react-native-ble-manager';
 
-import { StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
 
 import Navbar from './components/Navbar';
@@ -14,7 +14,7 @@ import Devices from './components/Devices';
 import Settings from './components/Settings';
 import Info from './components/Info';
 
-import { styles } from './consts/theme';
+import { getColor, styles } from './consts/theme';
 
 // BleManager.start({}).then(() => {
 //   console.log("Module initialized");
@@ -43,6 +43,10 @@ export default function App() {
 
   return (
     <View style={styles.container} >
+      <StatusBar
+        translucent
+        backgroundColor={getColor("fg")}
+      />
       <Navbar 
         title="Veri gud blutut epp"
         toggleSidebar={toggleSidebar}
