@@ -154,6 +154,7 @@ export let styles = getStyles();
 
 const initTheme = async () => {
   theme = await _retrieveData("theme", darkTheme);
+  theme = theme ?? "dark";
   styles= getStyles();
 }
 

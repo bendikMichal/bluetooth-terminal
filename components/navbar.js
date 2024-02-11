@@ -29,7 +29,7 @@ const Navbar = (props) => {
         {props.title}  
       </Text>
 
-      {props.children ?? null}
+      {props.children ?? <></>}
     </View>
   );
 }

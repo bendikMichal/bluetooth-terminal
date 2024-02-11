@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import BleManager from 'react-native-ble-manager';
+// import BleManager from 'react-native-ble-manager';
 
 import { StyleSheet, View } from 'react-native';
 import { useState } from 'react';
@@ -16,19 +16,19 @@ import Info from './components/Info';
 
 import { styles } from './consts/theme';
 
-BleManager.start({}).then(() => {
-  console.log("Module initialized");
-});
+// BleManager.start({}).then(() => {
+//   console.log("Module initialized");
+// });
 
-BleManager.scan([], 5, true).then(() => {
-  // Success code
-  console.log("Scan started");
-});
+// BleManager.scan([], 5, true).then(() => {
+//   // Success code
+//   console.log("Scan started");
+// });
 
-BleManager.stopScan().then(() => {
-  // Success code
-  console.log("Scan stopped");
-});
+// BleManager.stopScan().then(() => {
+//   // Success code
+//   console.log("Scan stopped");
+// });
 
 
 
