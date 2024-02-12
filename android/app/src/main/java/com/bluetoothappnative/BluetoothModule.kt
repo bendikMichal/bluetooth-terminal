@@ -31,11 +31,12 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   override fun getName(): String { return "BluetoothLiteModule" }
 
   @ReactMethod
-  fun initBluetooth (callback: Callback ) {
+  fun initBluetooth (callback: Callback) {
     val bluetoothManager: BluetoothManager = context.getSystemService(BluetoothManager::class.java)
 
     val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.getAdapter()
 
+    // check if supports bt
     if (bluetoothAdapter == null) {
       callback.invoke(false);
       return
@@ -43,6 +44,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
     val currentActivity = context.currentActivity
 
+    // request bt permissions if hadn't already
     if (currentActivity?.checkSelfPermission(Manifest.permission.BLUETOOTH_CONNECT)
         != PackageManager.PERMISSION_GRANTED) {
       // Request Bluetooth permission
@@ -52,6 +54,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
       )
     }
 
+    // request to enable bt
     if (bluetoothAdapter?.isEnabled == false) {
       val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
       currentActivity?.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
