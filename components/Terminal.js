@@ -1,19 +1,19 @@
 
 import { useEffect, useState } from "react";
-import { Text, NativeModules } from "react-native";
+import { Text } from "react-native";
+import BluetoothModule from "../native_modules_wrap/BluetoothModule";
 
-const { BluetoothLiteModule } = NativeModules;
-
-console.log(BluetoothLiteModule, NativeModules)
 
 const Terminal = (props) => {
-  const [ bres, setBres ] = useState("");
+  const [ bres, setBres ] = useState(false);
 
   useEffect(() => {
-    BluetoothLiteModule?.initBluetooth(res => {
-      console.log(res);
-      setBres(res);
-    });
+    if (!bres) {
+      BluetoothModule?.initBluetooth(res => {
+        console.log(res ? "Bluetooth init Success!": "Bluetooth init Failure!");
+        setBres(res);
+      });
+    }
   }, []);
 
   return (
