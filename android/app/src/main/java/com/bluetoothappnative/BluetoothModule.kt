@@ -3,6 +3,7 @@ package com.bluetoothappnative
 import android.Manifest
 import android.content.pm.PackageManager
 
+// bridging
 import com.facebook.react.bridge.NativeModule
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
@@ -10,15 +11,28 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
 
-import androidx.annotation.NonNull
+// arrays
+import com.facebook.react.bridge.WritableArray
+import com.facebook.react.bridge.WritableNativeArray
 
+// map
+import com.facebook.react.bridge.WritableMap
+import com.facebook.react.bridge.WritableNativeMap
+
+// bt stuff
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothSocket
+import android.bluetooth.BluetoothServerSocket
 
+// android stuff
 import android.content.Context
 import android.content.Intent
 import android.app.Activity
 
+import androidx.annotation.NonNull
+import android.util.Log
 
 
 class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -27,6 +41,11 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   val REQUEST_ENABLE_BT = 1
   val REQUEST_CODE_BLUETOOTH_PERMISSION = 2
 
+  private var bluetoothAdapter: BluetoothAdapter? = null
+  private var btSocket: BluetoothSocket? = null
+
+  private lateinit var acceptThread: AcceptThread
+
   @NonNull
   override fun getName(): String { return "BluetoothLiteModule" }
 
@@ -34,7 +53,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun initBluetooth (callback: Callback) {
     val bluetoothManager: BluetoothManager = context.getSystemService(BluetoothManager::class.java)
 
-    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.getAdapter()
+    bluetoothAdapter = bluetoothManager.getAdapter()
 
     // check if supports bt
     if (bluetoothAdapter == null) {
@@ -63,4 +82,59 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
     callback.invoke(true);
   }
+
+  @ReactMethod 
+  fun listPaired (callback: Callback) {
+    if (bluetoothAdapter == null) { return }
+    if (bluetoothAdapter?.isEnabled == false) { return }
+
+    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+    if (pairedDevices == null) { return }
+
+    val resJsArray: WritableArray = WritableNativeArray()
+
+    for (device in pairedDevices) {
+      val map: WritableMap = WritableNativeMap();
+      map.putString("name", device.name)
+      map.putString("address", device.address)
+      map.putString("uuid", getFirstUUIDFromDevice(device))
+      resJsArray.pushMap(map)
+    }
+
+    callback(resJsArray)
+  }
+
+  fun getFirstUUIDFromDevice (dev: BluetoothDevice): String {
+    if (dev.uuids != null && dev.uuids.isNotEmpty()) {
+      return dev.uuids[0].uuid.toString()
+    }
+
+    return ""
+  }
+
+  @ReactMethod
+  fun connect (NAME: String, _UUID: String, callback: Callback) {
+    if (bluetoothAdapter == null) { return }
+    if (bluetoothAdapter?.isEnabled == false) { return }
+
+    val thread = AcceptThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback)
+    thread.start()
+    // acceptThread = thread
+    // onConnectCallback(null, "SKIPPED ${NAME} ${_UUID}", callback)
+  }
+
+  fun onConnectCallback (result: BluetoothSocket?, error: String?, nativeCallback: Callback) {
+    val resMap: WritableMap = WritableNativeMap()
+    val connectSuccess: Boolean = result != null
+    if (connectSuccess) {
+      btSocket = result;
+    }
+
+    resMap.putBoolean("success", connectSuccess)
+    resMap.putString("error", error ?: "")
+    nativeCallback(resMap);
+
+    // acceptThread?.close()
+  }
+
 }

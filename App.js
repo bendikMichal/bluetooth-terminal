@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-// import BleManager from 'react-native-ble-manager';
+import BluetoothModule from "./native_modules_wrap/BluetoothModule";
 
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
@@ -30,6 +30,17 @@ import { getColor, styles } from './consts/theme';
 //   console.log("Scan stopped");
 // });
 
+BluetoothModule?.initBluetooth(res => {
+  console.log(res ? "Bluetooth init Success!": "Bluetooth init Failure!");
+});
+
+BluetoothModule?.listPaired(res => {
+  console.log(res);
+
+  BluetoothModule?.connect(res[0].name, res[0].uuid, _res => {
+    console.log(_res);
+  });
+});
 
 
 export default function App() {
