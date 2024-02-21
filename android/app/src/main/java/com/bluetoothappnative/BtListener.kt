@@ -23,12 +23,14 @@ val BTLISTENER: String = "BTLISTENER";
 
 typealias AcceptCallback = (result: BluetoothSocket?, error: String?, nativeCallback: Callback) -> Unit
 
-class AcceptThread(val NAME: String, 
-                   val _UUID: String, 
-                   val bluetoothAdapter: BluetoothAdapter?, 
-                   val acceptCallback: AcceptCallback, 
-                   val nativeCallback: Callback,
-                   val timeoutCallBack: Callback) : Thread() {
+class ServerThread(
+      val NAME: String, 
+      val _UUID: String, 
+      val bluetoothAdapter: BluetoothAdapter?, 
+      val acceptCallback: AcceptCallback, 
+      val nativeCallback: Callback,
+      // val timeoutCallBack: Callback
+  ) : Thread() {
 
   // private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
   //     bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(NAME, UUID.fromString(_UUID))
@@ -40,7 +42,7 @@ class AcceptThread(val NAME: String,
     try {
       mmServerSocket = bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(NAME, UUID.fromString(_UUID))
     } catch (e: IOException) {
-      Log.e(BTLISTENER, "mmServer failed to load", e)
+      Log.e(BTLISTENER, "Server failed to load", e)
     }
   }
 
@@ -75,12 +77,65 @@ class AcceptThread(val NAME: String,
   }
 
   // Closes the connect socket and causes the thread to finish.
-  fun cancel() {
+  public fun cancel() {
     try {
       mmServerSocket?.close()
+
     } catch (e: IOException) {
       Log.e(BTLISTENER, "Could not close the connect socket")
     }
   }
 
 }
+
+class ClientThread(
+      val device: BluetoothDevice, 
+      val _UUID: String, 
+      val bluetoothAdapter: BluetoothAdapter?, 
+      val acceptCallback: AcceptCallback, 
+      val nativeCallback: Callback,
+      // val timeoutCallBack: Callback
+  ) : Thread() {
+
+  private var btSocket: BluetoothSocket? = null
+
+  init {
+    try {
+      btSocket = device.createRfcommSocketToServiceRecord(UUID.fromString(_UUID))
+        
+    } catch (e: IOException) {
+      Log.e(BTLISTENER, "Client failed to create a connection", e)
+    }
+  }
+
+  override fun run() {
+    try {
+      // Cancel discovery because it otherwise slows down the connection.
+      bluetoothAdapter?.cancelDiscovery()
+
+      btSocket?.let { socket ->
+        // until it succeeds or throws an exception.
+        Log.d(BTLISTENER, "Waiting to connect")
+        socket.connect()
+
+        acceptCallback(socket, null, nativeCallback)
+      }
+    } catch (e: IOException) {
+      // acceptCallback(null, e.message ?: "", nativeCallback)
+      Log.e(BTLISTENER, e.message ?: "")
+
+      null
+    }
+  }
+
+  // Closes the client socket and causes the thread to finish.
+  public fun cancel() {
+    try {
+      btSocket?.close()
+
+    } catch (e: IOException) {
+      Log.e(BTLISTENER, "Could not close the client socket", e)
+    }
+  }
+}
+

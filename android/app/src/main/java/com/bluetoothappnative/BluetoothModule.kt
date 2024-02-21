@@ -36,6 +36,7 @@ import androidx.annotation.NonNull
 import android.util.Log
 import android.util.Base64
 
+import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 
@@ -49,7 +50,9 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   private var btSocket: BluetoothSocket? = null
   private var btIO: BtIO? = null
 
-  private lateinit var acceptThread: AcceptThread
+  lateinit var serverThread: ServerThread
+  lateinit var clientThread: ClientThread
+
 
   @NonNull
   override fun getName(): String { return "BluetoothLiteModule" }
@@ -78,6 +81,15 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
       )
     }
 
+    if (currentActivity?.checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN)
+        != PackageManager.PERMISSION_GRANTED) {
+      // Request Bluetooth permission
+      currentActivity?.requestPermissions(
+          arrayOf(Manifest.permission.BLUETOOTH_SCAN),
+          REQUEST_CODE_BLUETOOTH_PERMISSION
+      )
+    }
+
     // request to enable bt
     if (bluetoothAdapter?.isEnabled == false) {
       val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
@@ -87,13 +99,32 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
     callback.invoke(true);
   }
+  
+  fun getPaired (): Set<BluetoothDevice>? {
+    if (bluetoothAdapter == null) return null 
+    if (bluetoothAdapter?.isEnabled == false) return null
+
+    return bluetoothAdapter?.bondedDevices
+  }
+
+  fun getDeviceFromAddress (address: String): BluetoothDevice? {
+    val pairedDevices: Set<BluetoothDevice>? = getPaired()
+    if (pairedDevices == null) return null
+
+    var device: BluetoothDevice? = null
+    for (pd in pairedDevices) {
+      if (pd.address == address) {
+        device = pd
+        break
+      }
+    }
+
+    return device
+  }
 
   @ReactMethod 
   fun listPaired (callback: Callback) {
-    if (bluetoothAdapter == null) { return }
-    if (bluetoothAdapter?.isEnabled == false) { return }
-
-    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+    val pairedDevices: Set<BluetoothDevice>? = getPaired()
     if (pairedDevices == null) { return }
 
     val resJsArray: WritableArray = WritableNativeArray()
@@ -118,33 +149,86 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   }
 
   @ReactMethod
-  fun connect (NAME: String, _UUID: String, timeout: Int, callback: Callback, timeoutCallBack: Callback) {
+  fun startServer (NAME: String, _UUID: String, timeout: Int, callback: Callback) {
     if (bluetoothAdapter == null) { return }
     if (bluetoothAdapter?.isEnabled == false) { return }
     
-    Log.d(BTLISTENER, "connnect")
+    Log.d(BTLISTENER, "Start server")
 
-    val thread = AcceptThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback, timeoutCallBack)
-    thread.start()
+    serverThread = ServerThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback)
+    serverThread.start()
 
     var handler = Handler()
     handler.postDelayed({
-      if (thread.state != Thread.State.TERMINATED) {
+      if (serverThread.state != Thread.State.TERMINATED) {
         Log.e(BTLISTENER, "Timeout error.")
-        timeoutCallBack()
-        thread.interrupt()
+        onConnectCallback(null, "Timeout error.", callback)
+
+        // serverThread.cancel()
+        serverThread.interrupt()
       } else {
         Log.d(BTLISTENER, "success?")
       }
 
     }, timeout.toLong());
   }
+
+  // @ReactMethod
+  // fun stopServer () {
+  //   if (::serverThread.isInitialized) {
+  //     if (serverThread.state != Thread.State.TERMINATED) {
+  //       serverThread.cancel()
+  //       serverThread.interrupt()
+  //     }
+  //   }
+  // }
+
+  @ReactMethod
+  fun startClient (address: String, callback: Callback) {
+    
+    try {
+      Log.d(BTLISTENER, "Start Client")
+
+
+      var device: BluetoothDevice? = getDeviceFromAddress(address)
+
+      if (device == null) {
+        Log.e(BTLISTENER, "Failed to find device")
+        return
+      }
+      // onConnectCallback(null, "teststst", callback)
+      callback("jakwelhfawkjefhaw")
+
+      clientThread = ClientThread(
+                        device, 
+                        getFirstUUIDFromDevice(device),
+                        bluetoothAdapter,
+                        this::onConnectCallback, 
+                        callback, 
+                      )
+
+      clientThread.start()
+
+    } catch (e: Exception) {
+      Log.e(BTLISTENER, "welp", e)
+    }
+  }
+
+  // @ReactMethod
+  // fun stopClient () {
+  //   if (::clientThread.isInitialized) {
+  //     if (clientThread.state != Thread.State.TERMINATED) {
+  //       clientThread.cancel()
+  //       clientThread.interrupt()
+  //     }
+  //   }
+  // }
   
   @ReactMethod
-  fun btio (readCallback: Callback, writeErrorCallback: Callback) {
+  fun btio (initCallback: Callback, readCallback: Callback, writeErrorCallback: Callback) {
     if (btSocket == null) return
 
-    btIO = BtIO(btSocket!!, readCallback, writeErrorCallback);
+    btIO = BtIO(btSocket!!, initCallback, readCallback, writeErrorCallback);
     btIO?.start()
 
   }
@@ -159,7 +243,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   fun onConnectCallback (result: BluetoothSocket?, error: String?, nativeCallback: Callback) {
     val resMap: WritableMap = WritableNativeMap()
     val connectSuccess: Boolean = result != null
-    if (connectSuccess) {
+    if (connectSuccess && result != null) {
       btSocket = result;
     }
 
@@ -167,7 +251,6 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
     resMap.putString("error", error ?: "")
     nativeCallback(resMap);
 
-    // acceptThread?.close()
   }
 
 }

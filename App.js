@@ -36,24 +36,40 @@ BluetoothModule?.initBluetooth(res => {
 
 BluetoothModule?.listPaired(res => {
   console.log(res);
-  // const device = res.filter(item => item.name === "Redmi")[0];
-  // console.log(device);
+  const device = res.filter(item => item.name === "Redmi")[0];
+  console.log(device);
 
-  BluetoothModule?.connect(serviceName, serviceUUID, serverTimeout,
+  BluetoothModule?.startServer(serviceName, serviceUUID, serverTimeout,
      _res => {
       console.log(_res);
 
       BluetoothModule?.btio(
+        () => console.log("Init"),
         res => {
           console.log("got base64: ", res);
 
           BluetoothModule?.write("Hello World!");
+          // BluetoothModule?.stopServer();
         },
         () => console.log("Write failed")
       )
 
-    },
-    () => console.log("Timeout error!"));
+    });
+
+  // BluetoothModule?.startClient(device.address,
+  //    _res => {
+  //     console.log(_res);
+
+  //     BluetoothModule?.btio(
+  //       () => {
+  //         BluetoothModule?.write("Hello World!");
+  //         BluetoothModule?.stopClient();
+  //       },
+  //       res => console.log("got base64: ", res),
+  //       () => console.log("Write failed")
+  //     )
+
+  //   });
 });
 
 

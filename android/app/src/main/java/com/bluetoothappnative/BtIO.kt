@@ -25,13 +25,20 @@ import android.util.Base64
 
 val BTIO: String = "BTIO"
 
-class BtIO (val btSocket: BluetoothSocket, val readCallback: Callback, val writeErrorCallback: Callback) : Thread() {
+class BtIO (
+      val btSocket: BluetoothSocket,
+      val initCallback: Callback,
+      val readCallback: Callback, 
+      val writeErrorCallback: Callback
+  ) : Thread() {
 
   val btin: InputStream = btSocket.inputStream
   val btout: OutputStream = btSocket.outputStream
   var buffer: ByteArray = ByteArray(1024)
 
   override fun run () {
+    initCallback()
+    
     while (true) {
       try {
         btin.read(buffer)
