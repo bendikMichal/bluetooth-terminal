@@ -26,7 +26,8 @@ class AcceptThread(val NAME: String,
                    val _UUID: String, 
                    val bluetoothAdapter: BluetoothAdapter?, 
                    val acceptCallback: AcceptCallback, 
-                   val nativeCallback: Callback) : Thread() {
+                   val nativeCallback: Callback,
+                   val timeoutCallBack: Callback) : Thread() {
 
   // private val mmServerSocket: BluetoothServerSocket? by lazy(LazyThreadSafetyMode.NONE) {
   //     bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(NAME, UUID.fromString(_UUID))
@@ -62,6 +63,8 @@ class AcceptThread(val NAME: String,
         shouldLoop = false
         null
       }
+
+      Log.d("BTLISTENER:", "got here")
 
       socket?.also {
         acceptCallback(it, null, nativeCallback)

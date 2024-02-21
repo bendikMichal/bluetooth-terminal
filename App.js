@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 
-import BluetoothModule from "./native_modules_wrap/BluetoothModule";
+import BluetoothModule, { serverTimeout, serviceName, serviceUUID } from "./native_modules_wrap/BluetoothModule";
 
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { useState } from 'react';
@@ -36,10 +36,16 @@ BluetoothModule?.initBluetooth(res => {
 
 BluetoothModule?.listPaired(res => {
   console.log(res);
+  // const device = res.filter(item => item.name === "Redmi")[0];
+  // console.log(device);
 
-  BluetoothModule?.connect(res[0].name, res[0].uuid, _res => {
-    console.log(_res);
-  });
+  BluetoothModule?.connect(serviceName, serviceUUID, serverTimeout,
+     _res => {
+      console.log(_res);
+    },
+    () => {
+      console.log("Timeout error!");
+    });
 });
 
 

@@ -30,6 +30,7 @@ import android.bluetooth.BluetoothServerSocket
 import android.content.Context
 import android.content.Intent
 import android.app.Activity
+import android.os.Handler
 
 import androidx.annotation.NonNull
 import android.util.Log
@@ -113,14 +114,26 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   }
 
   @ReactMethod
-  fun connect (NAME: String, _UUID: String, callback: Callback) {
+  fun connect (NAME: String, _UUID: String, timeout: Int, callback: Callback, timeoutCallBack: Callback) {
     if (bluetoothAdapter == null) { return }
     if (bluetoothAdapter?.isEnabled == false) { return }
+    
+    Log.d("BTLISTENER:", "connnect")
 
-    val thread = AcceptThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback)
+    val thread = AcceptThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback, timeoutCallBack)
     thread.start()
-    // acceptThread = thread
-    // onConnectCallback(null, "SKIPPED ${NAME} ${_UUID}", callback)
+
+    var handler = Handler()
+    handler.postDelayed({
+      if (thread.state != Thread.State.TERMINATED) {
+        Log.e("BTLISTENER:", "Timeout error.")
+        timeoutCallBack()
+      } else {
+        Log.d("BTLISTENER:", "success?")
+      }
+
+      thread.interrupt()
+    }, timeout);
   }
 
   fun onConnectCallback (result: BluetoothSocket?, error: String?, nativeCallback: Callback) {
