@@ -34,6 +34,9 @@ import android.os.Handler
 
 import androidx.annotation.NonNull
 import android.util.Log
+import android.util.Base64
+
+import java.nio.charset.StandardCharsets
 
 
 class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -44,6 +47,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   private var bluetoothAdapter: BluetoothAdapter? = null
   private var btSocket: BluetoothSocket? = null
+  private var btIO: BtIO? = null
 
   private lateinit var acceptThread: AcceptThread
 
@@ -118,7 +122,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
     if (bluetoothAdapter == null) { return }
     if (bluetoothAdapter?.isEnabled == false) { return }
     
-    Log.d("BTLISTENER:", "connnect")
+    Log.d(BTLISTENER, "connnect")
 
     val thread = AcceptThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback, timeoutCallBack)
     thread.start()
@@ -126,14 +130,30 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
     var handler = Handler()
     handler.postDelayed({
       if (thread.state != Thread.State.TERMINATED) {
-        Log.e("BTLISTENER:", "Timeout error.")
+        Log.e(BTLISTENER, "Timeout error.")
         timeoutCallBack()
+        thread.interrupt()
       } else {
-        Log.d("BTLISTENER:", "success?")
+        Log.d(BTLISTENER, "success?")
       }
 
-      thread.interrupt()
-    }, timeout);
+    }, timeout.toLong());
+  }
+  
+  @ReactMethod
+  fun btio (readCallback: Callback, writeErrorCallback: Callback) {
+    if (btSocket == null) return
+
+    btIO = BtIO(btSocket!!, readCallback, writeErrorCallback);
+    btIO?.start()
+
+  }
+  
+  @ReactMethod
+  fun write (text: String) {
+    if (btIO == null) return
+    val buffer: ByteArray = text.toByteArray(StandardCharsets.UTF_8)
+    btIO?.write(buffer)
   }
 
   fun onConnectCallback (result: BluetoothSocket?, error: String?, nativeCallback: Callback) {

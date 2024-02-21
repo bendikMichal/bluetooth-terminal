@@ -42,10 +42,18 @@ BluetoothModule?.listPaired(res => {
   BluetoothModule?.connect(serviceName, serviceUUID, serverTimeout,
      _res => {
       console.log(_res);
+
+      BluetoothModule?.btio(
+        res => {
+          console.log("got base64: ", res);
+
+          BluetoothModule?.write("Hello World!");
+        },
+        () => console.log("Write failed")
+      )
+
     },
-    () => {
-      console.log("Timeout error!");
-    });
+    () => console.log("Timeout error!"));
 });
 
 

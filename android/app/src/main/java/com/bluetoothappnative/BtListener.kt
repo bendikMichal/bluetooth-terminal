@@ -19,6 +19,7 @@ import java.io.IOException
 import java.util.UUID
 import android.util.Log
 
+val BTLISTENER: String = "BTLISTENER";
 
 typealias AcceptCallback = (result: BluetoothSocket?, error: String?, nativeCallback: Callback) -> Unit
 
@@ -39,7 +40,7 @@ class AcceptThread(val NAME: String,
     try {
       mmServerSocket = bluetoothAdapter?.listenUsingInsecureRfcommWithServiceRecord(NAME, UUID.fromString(_UUID))
     } catch (e: IOException) {
-      Log.e("BTLISTENER:", "mmServer failed to load", e)
+      Log.e(BTLISTENER, "mmServer failed to load", e)
     }
   }
 
@@ -57,14 +58,12 @@ class AcceptThread(val NAME: String,
 
       } catch (e: IOException) {
         val error: String = "Socket's accept() method failed"
-        Log.e("BTLISTENER:", error)
+        Log.e(BTLISTENER, error)
         acceptCallback(null, error, nativeCallback)
 
         shouldLoop = false
         null
       }
-
-      Log.d("BTLISTENER:", "got here")
 
       socket?.also {
         acceptCallback(it, null, nativeCallback)
@@ -80,7 +79,7 @@ class AcceptThread(val NAME: String,
     try {
       mmServerSocket?.close()
     } catch (e: IOException) {
-      Log.e("BTLISTENER:", "Could not close the connect socket")
+      Log.e(BTLISTENER, "Could not close the connect socket")
     }
   }
 
