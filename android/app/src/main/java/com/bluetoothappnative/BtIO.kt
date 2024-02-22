@@ -27,9 +27,9 @@ val BTIO: String = "BTIO"
 
 class BtIO (
       val btSocket: BluetoothSocket,
-      val initCallback: Callback,
-      val readCallback: Callback, 
-      val writeErrorCallback: Callback
+      val initCallback: () -> Unit,
+      val readCallback: (String) -> Unit, 
+      val writeErrorCallback: () -> Unit
   ) : Thread() {
 
   val btin: InputStream = btSocket.inputStream
@@ -37,6 +37,8 @@ class BtIO (
   var buffer: ByteArray = ByteArray(1024)
 
   override fun run () {
+    
+    Log.d(BTIO, "Init btio")
     initCallback()
     
     while (true) {

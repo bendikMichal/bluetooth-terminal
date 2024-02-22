@@ -11,6 +11,8 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
 
+import com.facebook.react.modules.core.DeviceEventManagerModule
+
 // arrays
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableNativeArray
@@ -150,7 +152,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun startServer (NAME: String, _UUID: String, timeout: Int, callback: Callback) {
-    if (bluetoothAdapter == null) { return }
+    if (bluetoothAdapter == null || (::serverThread.isInitialized && serverThread.state != Thread.State.TERMINATED)) { return }
     if (bluetoothAdapter?.isEnabled == false) { return }
     
     Log.d(BTLISTENER, "Start server")
@@ -185,7 +187,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun startClient (address: String, callback: Callback) {
-    
+    if (::clientThread.isInitialized && clientThread.state != Thread.State.TERMINATED) return
     try {
       Log.d(BTLISTENER, "Start Client")
 
@@ -197,7 +199,6 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
         return
       }
       // onConnectCallback(null, "teststst", callback)
-      callback("jakwelhfawkjefhaw")
 
       clientThread = ClientThread(
                         device, 
@@ -225,10 +226,26 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
   // }
   
   @ReactMethod
-  fun btio (initCallback: Callback, readCallback: Callback, writeErrorCallback: Callback) {
+  // fun btio (initNativeCallback: Callback, readNativeCallback: Callback, writeErrorNativeCallback: Callback) {
+  fun btio () {
+    Log.d(BTIO, "B4 thread start")
     if (btSocket == null) return
 
-    btIO = BtIO(btSocket!!, initCallback, readCallback, writeErrorCallback);
+
+
+    // btIO = BtIO(btSocket!!, 
+    //             // initNativeCallback, readNativeCallback, writeErrorNativeCallback,
+    //             { initNativeCallback() },
+    //             { res -> readNativeCallback() },
+    //             { writeErrorNativeCallback() }
+    //             );
+
+    btIO = BtIO(btSocket!!, 
+                { emitEvent("InitCallbackEvent", "") },
+                { res -> emitEvent("ReadCallbackEvent", res) },
+                { emitEvent("WriteErrorCallbackEvent", "") }
+                );
+
     btIO?.start()
 
   }
@@ -249,8 +266,15 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
     resMap.putBoolean("success", connectSuccess)
     resMap.putString("error", error ?: "")
-    nativeCallback(resMap);
+    Log.d(BTIO, "B4 return callback")
+    return nativeCallback(resMap);
 
+  }
+
+  fun emitEvent(name: String, message: String) {
+    reactApplicationContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+        .emit(name, message)
   }
 
 }

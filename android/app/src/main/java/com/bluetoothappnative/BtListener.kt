@@ -1,6 +1,11 @@
 
 package com.bluetoothappnative
 
+import com.facebook.react.bridge.NativeModule
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Callback
 
 // bt stuff
@@ -110,6 +115,7 @@ class ClientThread(
 
   override fun run() {
     try {
+      Log.d(BTLISTENER, "Started Client run")
       // Cancel discovery because it otherwise slows down the connection.
       bluetoothAdapter?.cancelDiscovery()
 
@@ -121,8 +127,9 @@ class ClientThread(
         acceptCallback(socket, null, nativeCallback)
       }
     } catch (e: IOException) {
-      // acceptCallback(null, e.message ?: "", nativeCallback)
+      acceptCallback(null, e.message ?: "", nativeCallback)
       Log.e(BTLISTENER, e.message ?: "")
+      cancel()
 
       null
     }

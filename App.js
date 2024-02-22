@@ -3,7 +3,7 @@ import 'react-native-gesture-handler';
 import BluetoothModule, { serverTimeout, serviceName, serviceUUID } from "./native_modules_wrap/BluetoothModule";
 
 import { StatusBar, StyleSheet, View } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -16,60 +16,20 @@ import Info from './components/Info';
 
 import { getColor, styles } from './consts/theme';
 
-// BleManager.start({}).then(() => {
-//   console.log("Module initialized");
-// });
 
-// BleManager.scan([], 5, true).then(() => {
-//   // Success code
-//   console.log("Scan started");
-// });
+import { DeviceEventEmitter } from 'react-native';
 
-// BleManager.stopScan().then(() => {
-//   // Success code
-//   console.log("Scan stopped");
-// });
+DeviceEventEmitter.addListener('InitCallbackEvent', () => console.log("init"));
+
+DeviceEventEmitter.addListener('ReadCallbackEvent', () => {
+  BluetoothModule?.write("Hello World!");
+});
+
+DeviceEventEmitter.addListener('WriteErrorCallbackEvent', () => console.log("WriteError"));
+
 
 BluetoothModule?.initBluetooth(res => {
   console.log(res ? "Bluetooth init Success!": "Bluetooth init Failure!");
-});
-
-BluetoothModule?.listPaired(res => {
-  console.log(res);
-  const device = res.filter(item => item.name === "Redmi")[0];
-  console.log(device);
-
-  BluetoothModule?.startServer(serviceName, serviceUUID, serverTimeout,
-     _res => {
-      console.log(_res);
-
-      BluetoothModule?.btio(
-        () => console.log("Init"),
-        res => {
-          console.log("got base64: ", res);
-
-          BluetoothModule?.write("Hello World!");
-          // BluetoothModule?.stopServer();
-        },
-        () => console.log("Write failed")
-      )
-
-    });
-
-  // BluetoothModule?.startClient(device.address,
-  //    _res => {
-  //     console.log(_res);
-
-  //     BluetoothModule?.btio(
-  //       () => {
-  //         BluetoothModule?.write("Hello World!");
-  //         BluetoothModule?.stopClient();
-  //       },
-  //       res => console.log("got base64: ", res),
-  //       () => console.log("Write failed")
-  //     )
-
-  //   });
 });
 
 
@@ -78,9 +38,59 @@ export default function App() {
   const [ route, setRoute ] = useState("/");
   const [ refresh, setRefresh ] = useState(false);
 
+  const [ paired, setPaired ] = useState([]);
+  const [ device, setDevice ] = useState(null);
+  const [ started, setStarted ] = useState(false)
+
+  const startClient = () => {
+    if (started || !device) return
+    console.log("Trying to connect to server at:", device.address)
+    BluetoothModule?.startClient(device.address,
+      res => {
+        console.log("Client start res: ", res)
+        setStarted(res.success);
+    });
+  }
+
+  const startServer = () => {
+    if (started) return
+    BluetoothModule?.startServer(serviceName, serviceUUID, serverTimeout,
+      res => {
+        console.log("Start res: ", res)
+        setStarted(res.success);
+    });
+  }
+
+  useEffect(() => {
+    BluetoothModule?.listPaired(res => {
+      console.log("Paired: ", res)
+      setPaired(res);
+      setDevice(res.filter(item => item.name === "Redmi")[0]);
+    });
+  }, [])
+
+  useEffect(() => startClient(), [paired])
+  // useEffect(() => startServer(), [paired])
+
+
+  useEffect(() => {
+    if (!started) return
+    BluetoothModule?.btio()
+  }, [started])
+
+
+
+
+
+
+
   const handleChangeRoute = (item) => setRoute(item.route);
 
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  // const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+    startClient();
+  }
 
   return (
     <View style={styles.container} >
