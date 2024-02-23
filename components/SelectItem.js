@@ -19,13 +19,12 @@ const SelectItem = (props) => {
     <>
       <Button
         text={props.text}
-        subText={props.subtext}
+        subText={props.subText}
         customStyles={{ ...styles.menuItem, ...{ marginTop: 16 } }}
         textStyles={styles.text}
         subTextStyles={styles.subText}
         buttonName={props.buttonName}
         buttonSubName="checkmark"
-        // actionStyles={{ marginLeft: Math.floor(300 - 200 * Math.sin(Math.PI / 2 * value)) ?? 100 }}
         actionStyles={{ position: "relative", right: Math.floor(-150 + 175 * Math.sin(Math.PI / 2 * value)) }}
         background={false}
         onPress={() => {

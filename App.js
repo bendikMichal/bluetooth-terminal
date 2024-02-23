@@ -80,7 +80,10 @@ export default function App() {
 
 
 
-  const handleChangeRoute = (item) => setRoute(item.route);
+  const handleChangeRoute = (item) => {
+    setRoute(item.route);
+    setSidebarOpen(false);
+  }
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   // const toggleSidebar = () => {
