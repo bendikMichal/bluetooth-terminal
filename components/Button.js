@@ -9,6 +9,7 @@ import { getColor } from "../consts/theme";
 
 export default function Button({
   buttonName: buttonName,
+  buttonSubName: buttonSubName,
   onPress: onPress,
   useMargin: useMargin,
   background: background,
@@ -18,10 +19,12 @@ export default function Button({
   angle: angle,
   colored: colored,
   uriImage: uriImage,
+  uriSubImage: uriSubImage,
   customStyles: customStyles,
   textStyles: textStyles,
   subTextStyles: subTextStyles,
   buttonColor: buttonColor,
+  actionStyles: actionStyles
 
 } = props) {
 
@@ -31,6 +34,7 @@ export default function Button({
   angle = angle ?? false;
   colored = colored ?? false;
   uriImage = uriImage ?? false;
+  uriSubImage = uriSubImage ?? false;
   customStyles = customStyles ?? {};
   textStyles = textStyles ?? {};
   subTextStyles = subTextStyles ?? {};
@@ -49,9 +53,13 @@ export default function Button({
     ["zoom-out"]: require("./../assets/buttons/zoom-out.png"),
     ["menu"]: require("./../assets/buttons/menu.png"),
     ["terminal"]: require("./../assets/buttons/terminal.png"),
+    ["device"]: require("./../assets/buttons/device.png"),
     ["devices"]: require("./../assets/buttons/devices.png"),
     ["settings"]: require("./../assets/buttons/settings.png"),
     ["info"]: require("./../assets/buttons/info.png"),
+    ["client"]: require("./../assets/buttons/client.png"),
+    ["server"]: require("./../assets/buttons/server.png"),
+    ["checkmark"]: require("./../assets/buttons/checkmark.png"),
   };
 
   return (
@@ -112,6 +120,28 @@ export default function Button({
           </Text>
         )}
       </View>
+
+      { ( buttonSubName || uriSubImage ) && <Image
+        style={[
+          styles.image,
+          styles.subImage,
+          {
+            width: uriImage ? buttonSizeBg * 2 : buttonSize,
+            height: uriImage ? buttonSizeBg * 2 : buttonSize,
+            borderRadius: uriImage ? 8 : 0,
+            transform: angle ? [{ rotate: angle + "deg" }] : [],
+          },
+          actionStyles ?? {}
+        ]}
+        source={
+          uriSubImage
+            ? {
+                uri: uriSubImage,
+              }
+            : images[buttonSubName]
+        }
+        tintColor={uriSubImage ? null : buttonColor ?? getColor("text")}
+      />}
     </TouchableOpacity>
   );
 }
@@ -121,6 +151,9 @@ const styles = StyleSheet.create({
     width: buttonSize,
     height: buttonSize,
     // color: "black",
+  },
+  subImage: {
+    marginLeft: "auto"
   },
   button: {
     width: buttonSizeBg,

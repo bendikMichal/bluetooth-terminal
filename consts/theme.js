@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { _retrieveData, _storeData } from "../utils/asyncStorage";
 import { sidebarW, sidebarLayer, rootLayer } from "./constants";
 
-export const darkTheme = "dark";
+export const darkTheme = "trueDark";
 export const lighTheme = "green";
 export let theme = darkTheme;
 
@@ -42,6 +42,15 @@ const colors = {
     fg: "#392647",
     accent: "#9DC7C8",
     secondary: "#291637"
+  },
+  trueDark: {
+    bg: "#121212",
+    // text: "#3B0D11",
+    text: "#dfdfdf",
+    title: "#dfdfdf",
+    fg: "#000",
+    accent: "#333",
+    secondary: "#111"
   }
 
 }
@@ -86,6 +95,8 @@ const getStyles = () => StyleSheet.create({
     width: "89%",
     height: "auto",
     borderRadius: 0,
+    borderBottomWidth: 1,
+    borderColor: "#cfcfcf2c",
     // justifyContent: "space-around",
     justifyContent: "left",
     // justifyContent: "center"
@@ -94,7 +105,17 @@ const getStyles = () => StyleSheet.create({
   text: {
     color: getColor("text"),
     fontSize: 18,
-    fontWeight: "500",
+    // fontWeight: "500",
+    fontWeight: "200",
+    textAlignVertical: 'center',
+    marginLeft: 16
+  },
+
+  subText: {
+    color: getColor("text"),
+    fontSize: 12,
+    // fontWeight: "500",
+    fontWeight: "100",
     textAlignVertical: 'center',
     marginLeft: 16
   },
@@ -115,16 +136,16 @@ const getStyles = () => StyleSheet.create({
   title: {
     // monospace, serif
     fontFamily: "Roboto",
-    fontSize: 20,
+    fontSize: 21,
     color: getColor("title"),
-    fontWeight: "bold",
+    fontWeight: "200",
     textAlignVertical: 'center'
   },
 
   sidebar: {
     backgroundColor: getColor("secondary"),
     position: "absolute",
-    top: 91,
+    top: 87,
     left: 0,
     width: sidebarW,
     height: "100%",
@@ -135,7 +156,8 @@ const getStyles = () => StyleSheet.create({
     borderBottomRightRadius: 24,
     borderWidth: 2,
     borderLeftWidth: 0,
-    borderColor: getColor("text")
+    // borderColor: getColor("text")
+    borderColor: "#cfcfcfac",
   },
 
   settingsItem: {

@@ -1,12 +1,30 @@
 
-import { Text } from "react-native";
+import { FlatList, Text } from "react-native";
+
+import Button from "./Button";
+
+import { styles } from "../consts/theme";
+import SelectItem from "./SelectItem";
 
 const Devices = (props) => {
 
+  const getItem = ({index, item}) => {
+    return (
+      <SelectItem 
+        key={index}
+        text={item.name}
+        subText={item.address}
+        buttonName="device"
+        onPress={() => props.onSelect(item)}
+      />
+    );
+  }
+
   return (
-    <Text>
-      Test devices
-    </Text>
+    <FlatList 
+      data={props.devices ?? []}
+      renderItem={getItem}
+    />
   );
 }
 

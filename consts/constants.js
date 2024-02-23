@@ -1,5 +1,6 @@
 // button sizes
-export const buttonSize = 32;
+// export const buttonSize = 32;
+export const buttonSize = 28;
 export const buttonSizeBg = buttonSize * 1.25;
 
 export const borderWidth = 1;
