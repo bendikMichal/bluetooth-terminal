@@ -125,7 +125,17 @@ export default function App() {
           // <Terminal route="/Terminal" refresh={refresh} key="0"/>,
           <Client route="/Client" refresh={refresh} device={device} key="0" />,
           <Client route="/Server" refresh={refresh} key="0.1" />,
-          <Devices route="/Devices" refresh={refresh} devices={paired} onSelect={setDevice} key="1"/>,
+          <Devices 
+            route="/Devices" 
+            refresh={refresh} 
+            devices={paired} 
+            onSelect={setDevice} 
+            refreshDevices={() => BluetoothModule?.listPaired(res => {
+              console.log("Paired: ", res)
+              setPaired(res);
+            })}
+            key="1"
+          />,
           <Settings route="/Settings" setRefresh={setRefresh} refresh={refresh} key="2"/>,
           <Info route="/Info" refresh={refresh} key="3"/>,
         ]}

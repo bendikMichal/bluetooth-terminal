@@ -60,6 +60,7 @@ export default function Button({
     ["client"]: require("./../assets/buttons/client.png"),
     ["server"]: require("./../assets/buttons/server.png"),
     ["checkmark"]: require("./../assets/buttons/checkmark.png"),
+    ["refresh"]: require("./../assets/buttons/refresh.png"),
   };
 
   return (
@@ -68,7 +69,7 @@ export default function Button({
         styles.button,
         {
           margin: useMargin ? "6%" : "2%",
-          backgroundColor: !background ? "transparent" : colored ? getColor("secondary") : getColor("accent"),
+          backgroundColor: !background ? "transparent" : colored ? getColor("text") : getColor("accent"),
         },
         customStyles,
       ]}
