@@ -40,10 +40,14 @@ export default function App() {
   const [ paired, setPaired ] = useState([]);
   const [ device, setDevice ] = useState(null);
   const [ started, setStarted ] = useState(false);
+  const [ connected, setConnected ] = useState("");
 
   const [ tryStart, setTryStart ] = useState(false);
 
-  const [ messages, setMessages ] = useState([]);
+  const [ messages, setMessages ] = useState({
+    server: [],
+    client: []
+  });
 
   const startClient = () => {
     if (started || !device) return
@@ -54,6 +58,18 @@ export default function App() {
     BluetoothModule?.startClient(device.address,
       res => {
         console.log("Client start res: ", res)
+        if (!res.success) setMessages({
+          ...messages,
+          client: [
+            ...messages.client,
+            {
+              author: "Error",
+              message: res.error
+            }
+          ]
+        });
+        if (res.success) setConnected("client");
+
         setStarted(res.success);
         setTryStart(false);
     });
@@ -65,10 +81,17 @@ export default function App() {
 
     BluetoothModule?.startServer(serviceName, serviceUUID, timeout ?? serverTimeout,
       res => {
-        console.log("Start res: ", res)
+        console.log("Server start res: ", res)
+        if (res.success) setConnected("server");
+
         setStarted(res.success);
         setTryStart(false);
     });
+  }
+
+  const stopClient = () => {
+    BluetoothModule?.stopClient();
+    setStarted(false);
   }
 
   const stopServer = () => {
@@ -76,7 +99,6 @@ export default function App() {
     setStarted(false);
   }
 
-  
 
   useEffect(() => {
     BluetoothModule?.listPaired(res => {
@@ -88,10 +110,13 @@ export default function App() {
 
   useEffect(() => {
     const addMessage = res => {
-      setMessages(prev => [...prev, {
-        timestamp: new Date(),
-        message: res
-      }]);
+      setMessages(prev => ({
+        ...prev,
+        [connected]: [...prev[connected], {
+          timestamp: new Date(),
+          message: res
+        }]
+      }));
     }
 
     const readListener = DeviceEventEmitter.addListener('ReadCallbackEvent', addMessage);
@@ -99,7 +124,7 @@ export default function App() {
     return () => {
       readListener.remove('ReadCallbackEvent', addMessage);
     };
-  }, [])
+  }, [connected])
 
   // useEffect(() => startClient(), [paired])
   // useEffect(() => startServer(), [paired])
@@ -107,8 +132,6 @@ export default function App() {
   useEffect(() => {
     if (started) BluetoothModule?.btio();
   }, [started])
-
-
 
   const handleChangeRoute = (item) => {
     setRoute(item.route);
@@ -153,18 +176,48 @@ export default function App() {
         route={route}
         routes={[
           // <Terminal route="/Terminal" refresh={refresh} key="0"/>,
-          <Client route="/Client" refresh={refresh} device={device} key="0" />,
-          <Server route="/Server" refresh={refresh} key="0.1"
+          <Client route="/Client" refresh={refresh} device={device} key="0" 
+            connected={connected}
             started={started}
             trying={tryStart}
-            messages={messages}
+            messages={messages.client}
+            startClient={startClient}
+            stopServer={stopClient}
+            onGotoDevices={() => handleChangeRoute({ title: "Devices", route: "/Devices", icon: "devices" })}
+            onSend={val => {
+              let msg = (String(val) ?? "") + "\n";
+              if (started) {
+                BluetoothModule?.write(msg);
+                setMessages(
+                  {
+                    ...messages,
+                    client: [...messages.client, {
+                      author: "You",
+                      message: msg
+                    }]
+                  });
+              }
+            }}
+          />,
+          <Server route="/Server" refresh={refresh} key="0.1"
+            connected={connected}
+            started={started}
+            trying={tryStart}
+            messages={messages.server}
             startServer={startServer}
             stopServer={stopServer}
             onSend={val => {
               let msg = (String(val) ?? "") + "\n";
               if (started) {
                 BluetoothModule?.write(msg);
-                setMessages([...messages, { author: "You", message: msg }])
+                setMessages(
+                  {
+                    ...messages,
+                    server: [...messages.server, {
+                      author: "You",
+                      message: msg
+                    }]
+                  });
               }
             }}
           />,
@@ -172,7 +225,14 @@ export default function App() {
             route="/Devices" 
             refresh={refresh} 
             devices={paired} 
-            onSelect={setDevice} 
+            onSelect={(devc) => {
+              if (!devc) return
+              if (devc.address !== device?.address) setMessages({
+                ...messages,
+                client: []
+              });
+              setDevice(devc);
+            }}
             refreshDevices={() => BluetoothModule?.listPaired(res => {
               console.log("Paired: ", res)
               setPaired(res);

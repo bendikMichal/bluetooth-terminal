@@ -222,15 +222,15 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
     }
   }
 
-  // @ReactMethod
-  // fun stopClient () {
-  //   if (::clientThread.isInitialized) {
-  //     if (clientThread.state != Thread.State.TERMINATED) {
-  //       clientThread.cancel()
-  //       clientThread.interrupt()
-  //     }
-  //   }
-  // }
+  @ReactMethod
+  fun stopClient () {
+    if (::clientThread.isInitialized) {
+      if (clientThread.state != Thread.State.TERMINATED) {
+        stopServer()
+        clientThread.interrupt()
+      }
+    }
+  }
   
   @ReactMethod
   // fun btio (initNativeCallback: Callback, readNativeCallback: Callback, writeErrorNativeCallback: Callback) {

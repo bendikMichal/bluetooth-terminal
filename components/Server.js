@@ -1,10 +1,11 @@
 import { View, Text, FlatList } from "react-native";
 
+import { useState } from "react";
+
 import Button from "./Button";
+import Messager from "./Messager";
 
 import { styles, getColor } from "../consts/theme";
-import { useState } from "react";
-import Messager from "./Messager";
 
 
 const Server = (props) => {
@@ -18,56 +19,66 @@ const Server = (props) => {
         height: "95%",
       }}
     >
-      <View
-        style={{
-          width: "100%",
-          height: "86%",
-        }}
-      >
-        <View
-          style={styles.row}
+      {(props.started && props.connected === "client") ?
+
+        (<Text
+          style={styles.text}
         >
-          <Text
-            style={[styles.text, { paddingLeft: 8 }]}
-          > 
-            Server status: 
-          </Text>
+          Can not start server while client is running. If you want to start server, please stop client.
+        </Text>) :
 
-          <Text
-            style={[styles.text, { marginLeft: 24, fontWeight: "600" }]}
-          >
-            {props.started ? "running": props.trying ? "waiting" : "stopped"}
-          </Text>
-
-          <Button 
-            buttonName={props.started ? "stop": props.trying ? "wait" : "play"}
-            buttonColor={getColor("fg")}
-            customStyles={{ marginLeft: "auto", marginRight: 32, padding: 8 }}
-            background={true}
-            colored={true}
-            onPress={() => {
-              if (!props.started) props.startServer(timeout)
-              else props.stopServer()
+        <>
+          <View
+            style={{
+              width: "100%",
+              height: "86%",
             }}
-          />
-        </View>
-
-        <FlatList 
-          data={props.messages}
-          renderItem={({index, item}) => (
-            <Text
-              key={index}
-              style={styles.text}
+          >
+            <View
+              style={styles.row}
             >
-              {`${item.author ?? item.timestamp.toISOString()} - ${item.message}`}
-            </Text>
-          )}
-        />
+              <Text
+                style={[styles.text, { paddingLeft: 8 }]}
+              > 
+                Server status: 
+              </Text>
 
-      </View>
-      {props.started && <Messager
-        onSend={props.onSend}
-      />}
+              <Text
+                style={[styles.text, { marginLeft: 24, fontWeight: "600" }]}
+              >
+                {props.started ? "running": props.trying ? "waiting" : "stopped"}
+              </Text>
+
+              <Button 
+                buttonName={props.started ? "stop": props.trying ? "wait" : "play"}
+                buttonColor={getColor("fg")}
+                customStyles={{ marginLeft: "auto", marginRight: 32, padding: 8 }}
+                background={true}
+                colored={true}
+                onPress={() => {
+                  if (!props.started) props.startServer(timeout)
+                  else props.stopServer()
+                }}
+              />
+            </View>
+
+            <FlatList 
+              data={props.messages}
+              renderItem={({index, item}) => (
+                <Text
+                  key={index}
+                  style={styles.text}
+                >
+                  {`${item.author ?? item.timestamp.toISOString()} - ${item.message}`}
+                </Text>
+              )}
+            />
+
+          </View>
+          {props.started && <Messager
+            onSend={props.onSend}
+          />}
+        </>}
     </View>
   );
 

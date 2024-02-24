@@ -65,6 +65,8 @@ export default function Button({
     ["stop"]: require("./../assets/buttons/stop.png"),
     ["wait"]: require("./../assets/buttons/wait.png"),
     ["send"]: require("./../assets/buttons/send.png"),
+    ["connected"]: require("./../assets/buttons/connected.png"),
+    ["disconnected"]: require("./../assets/buttons/disconnected.png"),
   };
 
   return (
