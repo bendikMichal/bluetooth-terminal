@@ -102,6 +102,20 @@ const getStyles = () => StyleSheet.create({
     // justifyContent: "center"
   },
 
+  smallButton: {
+    padding: 8,
+    margin: 4,
+    marginRight: 0,
+    marginLeft: "auto",
+    marginRight: "auto",
+    minWidth: "25%",
+    height: "auto",
+    borderRadius: 0,
+    // justifyContent: "space-around",
+    justifyContent: "left",
+    // justifyContent: "center"
+  },
+
   text: {
     color: getColor("text"),
     fontSize: 18,
@@ -129,6 +143,11 @@ const getStyles = () => StyleSheet.create({
     width: "100%",
     minHeight: 64,
     // alignItems: "left",
+    justifyContent: "left",
+    flexDirection: "row"
+  },
+
+  row: {
     justifyContent: "left",
     flexDirection: "row"
   },

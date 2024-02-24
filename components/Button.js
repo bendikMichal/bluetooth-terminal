@@ -61,6 +61,10 @@ export default function Button({
     ["server"]: require("./../assets/buttons/server.png"),
     ["checkmark"]: require("./../assets/buttons/checkmark.png"),
     ["refresh"]: require("./../assets/buttons/refresh.png"),
+    ["play"]: require("./../assets/buttons/play.png"),
+    ["stop"]: require("./../assets/buttons/stop.png"),
+    ["wait"]: require("./../assets/buttons/wait.png"),
+    ["send"]: require("./../assets/buttons/send.png"),
   };
 
   return (

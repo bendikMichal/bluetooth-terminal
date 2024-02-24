@@ -3,13 +3,15 @@ import 'react-native-gesture-handler';
 import BluetoothModule, { serverTimeout, serviceName, serviceUUID } from "./native_modules_wrap/BluetoothModule";
 
 import { StatusBar, StyleSheet, View } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Navigation from './components/Navigation';
 
 import Terminal from './components/Terminal';
+import Client from './components/Client';
+import Server from './components/Server';
 import Devices from './components/Devices';
 import Settings from './components/Settings';
 import Info from './components/Info';
@@ -18,13 +20,8 @@ import { getColor, styles } from './consts/theme';
 
 
 import { DeviceEventEmitter } from 'react-native';
-import Client from './components/Client';
 
 DeviceEventEmitter.addListener('InitCallbackEvent', () => console.log("init"));
-
-DeviceEventEmitter.addListener('ReadCallbackEvent', () => {
-  BluetoothModule?.write("Hello World!");
-});
 
 DeviceEventEmitter.addListener('WriteErrorCallbackEvent', () => console.log("WriteError"));
 
@@ -35,32 +32,51 @@ BluetoothModule?.initBluetooth(res => {
 
 
 export default function App() {
+
   const [ sidebarOpen, setSidebarOpen ] = useState(false);
   const [ route, setRoute ] = useState("/");
   const [ refresh, setRefresh ] = useState(false);
 
   const [ paired, setPaired ] = useState([]);
   const [ device, setDevice ] = useState(null);
-  const [ started, setStarted ] = useState(false)
+  const [ started, setStarted ] = useState(false);
+
+  const [ tryStart, setTryStart ] = useState(false);
+
+  const [ messages, setMessages ] = useState([]);
 
   const startClient = () => {
     if (started || !device) return
+    if (tryStart) return
+    setTryStart(true);
+
     console.log("Trying to connect to server at:", device.address)
     BluetoothModule?.startClient(device.address,
       res => {
         console.log("Client start res: ", res)
         setStarted(res.success);
+        setTryStart(false);
     });
   }
 
-  const startServer = () => {
-    if (started) return
-    BluetoothModule?.startServer(serviceName, serviceUUID, serverTimeout,
+  const startServer = (timeout) => {
+    if (started || tryStart) return
+    setTryStart(true);
+
+    BluetoothModule?.startServer(serviceName, serviceUUID, timeout ?? serverTimeout,
       res => {
         console.log("Start res: ", res)
         setStarted(res.success);
+        setTryStart(false);
     });
   }
+
+  const stopServer = () => {
+    BluetoothModule?.stopServer();
+    setStarted(false);
+  }
+
+  
 
   useEffect(() => {
     BluetoothModule?.listPaired(res => {
@@ -70,12 +86,26 @@ export default function App() {
     });
   }, [])
 
+  useEffect(() => {
+    const addMessage = res => {
+      setMessages(prev => [...prev, {
+        timestamp: new Date(),
+        message: res
+      }]);
+    }
+
+    const readListener = DeviceEventEmitter.addListener('ReadCallbackEvent', addMessage);
+
+    return () => {
+      readListener.remove('ReadCallbackEvent', addMessage);
+    };
+  }, [])
+
   // useEffect(() => startClient(), [paired])
   // useEffect(() => startServer(), [paired])
 
   useEffect(() => {
-    if (!started) return
-    BluetoothModule?.btio()
+    if (started) BluetoothModule?.btio();
   }, [started])
 
 
@@ -124,7 +154,20 @@ export default function App() {
         routes={[
           // <Terminal route="/Terminal" refresh={refresh} key="0"/>,
           <Client route="/Client" refresh={refresh} device={device} key="0" />,
-          <Client route="/Server" refresh={refresh} key="0.1" />,
+          <Server route="/Server" refresh={refresh} key="0.1"
+            started={started}
+            trying={tryStart}
+            messages={messages}
+            startServer={startServer}
+            stopServer={stopServer}
+            onSend={val => {
+              let msg = (String(val) ?? "") + "\n";
+              if (started) {
+                BluetoothModule?.write(msg);
+                setMessages([...messages, { author: "You", message: msg }])
+              }
+            }}
+          />,
           <Devices 
             route="/Devices" 
             refresh={refresh} 

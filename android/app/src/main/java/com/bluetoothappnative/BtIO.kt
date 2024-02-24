@@ -45,7 +45,8 @@ class BtIO (
       try {
         btin.read(buffer)
 
-        val res: String = Base64.encodeToString(buffer, Base64.DEFAULT)
+        // val res: String = Base64.encodeToString(buffer, Base64.DEFAULT)
+        val res: String = String(buffer)
         readCallback(res)
 
       } catch (e: IOException) {

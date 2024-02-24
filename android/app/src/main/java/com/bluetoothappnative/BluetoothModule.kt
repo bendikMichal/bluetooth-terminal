@@ -152,7 +152,9 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun startServer (NAME: String, _UUID: String, timeout: Int, callback: Callback) {
-    if (bluetoothAdapter == null || (::serverThread.isInitialized && serverThread.state != Thread.State.TERMINATED)) { return }
+    Log.d(BTLISTENER, "Server b4 ifs")
+    if (bluetoothAdapter == null || (::serverThread.isInitialized && serverThread.state != Thread.State.TERMINATED) || btSocket != null) { return }
+    Log.d(BTLISTENER, "Server 1st if")
     if (bluetoothAdapter?.isEnabled == false) { return }
     
     Log.d(BTLISTENER, "Start server")
@@ -160,34 +162,39 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
     serverThread = ServerThread(NAME, _UUID, bluetoothAdapter, this::onConnectCallback, callback)
     serverThread.start()
 
-    var handler = Handler()
-    handler.postDelayed({
-      if (serverThread.state != Thread.State.TERMINATED) {
-        Log.e(BTLISTENER, "Timeout error.")
-        onConnectCallback(null, "Timeout error.", callback)
+    if (timeout > 0) {
+      var handler = Handler()
+      handler.postDelayed({
+        if (serverThread.state != Thread.State.TERMINATED) {
+          Log.e(BTLISTENER, "Timeout error.")
+          onConnectCallback(null, "Timeout error.", callback)
 
-        // serverThread.cancel()
-        serverThread.interrupt()
-      } else {
-        Log.d(BTLISTENER, "success?")
-      }
+          serverThread.interrupt()
+        } else {
+          Log.d(BTLISTENER, "success?")
+        }
 
-    }, timeout.toLong());
+      }, timeout.toLong());
+    }
   }
 
-  // @ReactMethod
-  // fun stopServer () {
-  //   if (::serverThread.isInitialized) {
-  //     if (serverThread.state != Thread.State.TERMINATED) {
-  //       serverThread.cancel()
-  //       serverThread.interrupt()
-  //     }
-  //   }
-  // }
+  @ReactMethod
+  fun stopServer () {
+    if (btSocket == null) return
+
+    try {
+      btSocket?.close()
+      btSocket = null
+
+    } catch (e: IOException) {
+      Log.e(BTLISTENER, "Could not close the connect socket")
+    }
+  }
+
 
   @ReactMethod
   fun startClient (address: String, callback: Callback) {
-    if (::clientThread.isInitialized && clientThread.state != Thread.State.TERMINATED) return
+    if (::clientThread.isInitialized && clientThread.state != Thread.State.TERMINATED || btSocket != null) return
     try {
       Log.d(BTLISTENER, "Start Client")
 
