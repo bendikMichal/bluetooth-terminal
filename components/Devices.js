@@ -28,19 +28,29 @@ const Devices = (props) => {
 
       }}
     >
-      <FlatList 
-        data={props.devices ?? []}
-        renderItem={getItem}
-      />
+      {(props.started && props.connected === "server") ?
 
-      <Button 
-        customStyles={{ position: "absolute", right: 16, bottom: 16 }}
-        buttonColor={getColor("fg")}
-        buttonName="refresh"
-        background={true}
-        colored={true}
-        onPress={props.refreshDevices}
-      />
+        (<Text
+          style={styles.text}
+        >
+          Can not change device while client is running. If you want to change device, please stop client.
+        </Text>) :
+
+        <>
+          <FlatList 
+            data={props.devices ?? []}
+            renderItem={getItem}
+          />
+
+          <Button 
+            customStyles={{ position: "absolute", right: 16, bottom: 16 }}
+            buttonColor={getColor("fg")}
+            buttonName="refresh"
+            background={true}
+            colored={true}
+            onPress={props.refreshDevices}
+          />
+        </>}
     </View>
   );
 }

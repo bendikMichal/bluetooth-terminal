@@ -55,7 +55,7 @@ export default function App() {
     setTryStart(true);
 
     console.log("Trying to connect to server at:", device.address)
-    BluetoothModule?.startClient(device.address,
+    BluetoothModule?.startClient(device.address, serviceUUID,
       res => {
         console.log("Client start res: ", res)
         if (!res.success) setMessages({
@@ -182,7 +182,7 @@ export default function App() {
             trying={tryStart}
             messages={messages.client}
             startClient={startClient}
-            stopServer={stopClient}
+            stopClient={stopClient}
             onGotoDevices={() => handleChangeRoute({ title: "Devices", route: "/Devices", icon: "devices" })}
             onSend={val => {
               let msg = (String(val) ?? "") + "\n";

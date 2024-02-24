@@ -43,6 +43,7 @@ class BtIO (
     
     while (true) {
       try {
+        buffer.fill(0)
         btin.read(buffer)
 
         // val res: String = Base64.encodeToString(buffer, Base64.DEFAULT)

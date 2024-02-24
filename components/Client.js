@@ -32,7 +32,9 @@ const Client = (props) => {
             subTextStyles={styles.subText}
             buttonName="device"
             background={false}
-            onPress={props.onGotoDevices}
+            onPress={() => {
+              if (!props.started) props.onGotoDevices()
+            }}
           />
 
           <View

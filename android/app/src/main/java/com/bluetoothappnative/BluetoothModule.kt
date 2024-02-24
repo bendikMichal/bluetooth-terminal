@@ -193,7 +193,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
 
   @ReactMethod
-  fun startClient (address: String, callback: Callback) {
+  fun startClient (address: String, _UUID: String, callback: Callback) {
     if (::clientThread.isInitialized && clientThread.state != Thread.State.TERMINATED || btSocket != null) return
     try {
       Log.d(BTLISTENER, "Start Client")
@@ -209,7 +209,8 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
       clientThread = ClientThread(
                         device, 
-                        getFirstUUIDFromDevice(device),
+                        // getFirstUUIDFromDevice(device),
+                        _UUID,
                         bluetoothAdapter,
                         this::onConnectCallback, 
                         callback, 
