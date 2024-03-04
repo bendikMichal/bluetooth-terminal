@@ -125,6 +125,21 @@ const getStyles = () => StyleSheet.create({
     marginLeft: 16
   },
 
+  boldText: {
+    color: getColor("text"),
+    fontSize: 18,
+    // fontWeight: "500",
+    fontWeight: "300",
+    textAlignVertical: 'center',
+    marginLeft: 16
+  },
+
+  selectedText: {
+    fontWeight: "500",
+    borderBottomColor: getColor("text"),
+    borderBottomWidth: 1
+  },
+
   subText: {
     color: getColor("text"),
     fontSize: 12,
