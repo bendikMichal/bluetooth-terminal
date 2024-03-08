@@ -119,10 +119,17 @@ export default function App() {
       }));
     }
 
+    const disconnect = () => {
+      // it actually calls stop server too, so it stops one or the other or both
+      stopClient();
+    }
+
     const readListener = DeviceEventEmitter.addListener('ReadCallbackEvent', addMessage);
+    const disconnectListener = DeviceEventEmitter.addListener('DisconnectEvent', disconnect);
 
     return () => {
       readListener.remove('ReadCallbackEvent', addMessage);
+      disconnectListener.remove('DisconnectEvent', disconnect);
     };
   }, [connected])
 

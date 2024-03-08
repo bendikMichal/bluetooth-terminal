@@ -56,6 +56,7 @@ class ServerThread(
     if (mmServerSocket == null) {
       return
     }
+    Log.d(BTLISTENER, "Server waiting for connections")
 
     var shouldLoop = true
     while (shouldLoop) {

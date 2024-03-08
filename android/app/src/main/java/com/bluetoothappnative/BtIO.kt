@@ -29,7 +29,8 @@ class BtIO (
       val btSocket: BluetoothSocket,
       val initCallback: () -> Unit,
       val readCallback: (String) -> Unit, 
-      val writeErrorCallback: () -> Unit
+      val writeErrorCallback: () -> Unit,
+      val disconnectCallback: () -> Unit
   ) : Thread() {
 
   val btin: InputStream = btSocket.inputStream
@@ -51,6 +52,7 @@ class BtIO (
         readCallback(res)
 
       } catch (e: IOException) {
+        disconnectCallback()
         Log.d(BTIO, "Input stream was disconnected", e)
         break
       }

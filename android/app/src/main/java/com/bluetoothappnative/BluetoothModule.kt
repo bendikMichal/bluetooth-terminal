@@ -152,9 +152,7 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun startServer (NAME: String, _UUID: String, timeout: Int, callback: Callback) {
-    Log.d(BTLISTENER, "Server b4 ifs")
     if (bluetoothAdapter == null || (::serverThread.isInitialized && serverThread.state != Thread.State.TERMINATED) || btSocket != null) { return }
-    Log.d(BTLISTENER, "Server 1st if")
     if (bluetoothAdapter?.isEnabled == false) { return }
     
     Log.d(BTLISTENER, "Start server")
@@ -194,7 +192,12 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun startClient (address: String, _UUID: String, callback: Callback) {
-    if (::clientThread.isInitialized && clientThread.state != Thread.State.TERMINATED || btSocket != null) return
+
+    if (::clientThread.isInitialized) {
+      Log.d(BTLISTENER, "${clientThread.state != Thread.State.TERMINATED}, ${btSocket != null}")
+    }
+
+    if ((::clientThread.isInitialized && clientThread.state != Thread.State.TERMINATED) || btSocket != null) return
     try {
       Log.d(BTLISTENER, "Start Client")
 
@@ -225,9 +228,10 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
 
   @ReactMethod
   fun stopClient () {
+    stopServer()
+
     if (::clientThread.isInitialized) {
       if (clientThread.state != Thread.State.TERMINATED) {
-        stopServer()
         clientThread.interrupt()
       }
     }
@@ -251,7 +255,8 @@ class BluetoothModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
     btIO = BtIO(btSocket!!, 
                 { emitEvent("InitCallbackEvent", "") },
                 { res -> emitEvent("ReadCallbackEvent", res) },
-                { emitEvent("WriteErrorCallbackEvent", "") }
+                { emitEvent("WriteErrorCallbackEvent", "") },
+                { emitEvent("DisconnectEvent", "") }
                 );
 
     btIO?.start()
