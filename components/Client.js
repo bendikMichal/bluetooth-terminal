@@ -7,6 +7,7 @@ import ClientTerminal from "./ClientTerminal";
 import { styles, getColor } from "../consts/theme";
 import Page from "./Page";
 import Pager from "./Pager";
+import ClientVariableChanger from "./ClientVariableChanger";
 
 const Client = (props) => {
 
@@ -27,9 +28,9 @@ const Client = (props) => {
 
         <>
           <Pager>
-            <Page name="Terminal1"><ClientTerminal {...props}/></Page>
+            <Page name="Terminal"><ClientTerminal {...props}/></Page>
             <Page name="Terminal2"><ClientTerminal {...props}/></Page>
-            <Page name="Terminal3"><ClientTerminal {...props}/></Page>
+            <Page name="Variables"><ClientVariableChanger {...props}/></Page>
           </Pager>
         </>}
     </View>

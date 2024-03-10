@@ -19,6 +19,8 @@ export const _retrieveData = async (key, _default = "") => {
       return value;
     }
     await _storeData(key, _default)
+    return _default;
+
   } catch (error) {
     throw error;
   }
