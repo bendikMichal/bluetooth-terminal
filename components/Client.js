@@ -29,8 +29,7 @@ const Client = (props) => {
         <>
           <Pager>
             <Page name="Terminal"><ClientTerminal {...props}/></Page>
-            <Page name="Terminal2"><ClientTerminal {...props}/></Page>
-            <Page name="Variables"><ClientVariableChanger {...props}/></Page>
+            { props.started && <Page name="Variables"><ClientVariableChanger {...props}/></Page> }
           </Pager>
         </>}
     </View>

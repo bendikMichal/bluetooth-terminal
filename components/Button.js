@@ -46,6 +46,7 @@ export default function Button({
     ["arrow"]: require("./../assets/buttons/arrow.png"),
     ["arrowDown"]: require("./../assets/buttons/arrowDown.png"),
     ["plus"]: require("./../assets/buttons/plus.png"),
+    ["minus"]: require("./../assets/buttons/minus.png"),
     ["accept"]: require("./../assets/buttons/accept.png"),
     ["cross"]: require("./../assets/buttons/cross.png"),
     ["gallery"]: require("./../assets/buttons/gallery.png"),
@@ -67,6 +68,7 @@ export default function Button({
     ["send"]: require("./../assets/buttons/send.png"),
     ["connected"]: require("./../assets/buttons/connected.png"),
     ["disconnected"]: require("./../assets/buttons/disconnected.png"),
+    ["trash"]: require("./../assets/buttons/trash.png"),
   };
 
   return (
