@@ -178,10 +178,11 @@ const ClientVariableChanger = (props) => {
         background={true}
         colored={true}
         onPress={() => {
+          console.log(variables, deviceId)
           setVariables({
             ...variables,
             [deviceId]: [
-              ...variables[deviceId],
+              ...(variables[deviceId] ?? []),
               { name: `${getNewUUID()}`, value: "0" }
             ]
           })
