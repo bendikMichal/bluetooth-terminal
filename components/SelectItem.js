@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Button from "./Button";
 
 import useAnimated from "../utils/useAnimated";
-import { styles } from "../consts/theme";
+import { getColor, styles } from "../consts/theme";
 
 const SelectItem = (props) => {
   const [ value, setValue ] = useState(0);

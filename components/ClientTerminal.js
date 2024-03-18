@@ -39,10 +39,11 @@ const ClientTerminal = (props) => {
 
           <Button 
             buttonName={props.started ? "connected" : props.trying ? "wait" : "disconnected"}
-            buttonColor={getColor("fg")}
+            // buttonColor={getColor("fg")}
+            buttonColor={getColor("text")}
             customStyles={{ marginLeft: "auto", marginRight: 32, padding: 8 }}
             background={true}
-            colored={true}
+            // colored={true}
             onPress={() => {
               if (!props.started) props.startClient();
               else props.stopClient();

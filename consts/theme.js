@@ -49,8 +49,20 @@ const colors = {
     text: "#dfdfdf",
     title: "#dfdfdf",
     fg: "#000",
-    accent: "#333",
+    accent: "#5b79fa",
     secondary: "#111"
+  },
+  modern: {
+    bg: "#323d60",
+    text: "#fcfbff",
+    title: "#fcfbff",
+    // fg: "#3c486d",
+    fg: "#252f4b",
+    accent: "#333",
+    secondary: "#3c486d",
+    border: "#323d60"
+    // border: "#fff"
+
   }
 
 }
@@ -77,7 +89,8 @@ const getStyles = () => StyleSheet.create({
   },
 
   activeDot: {
-    backgroundColor: getColor("text"),
+    // backgroundColor: getColor("text"),
+    backgroundColor: getColor("accent"),
     width: 4,
     marginRight: 4,
     height: 24,
@@ -136,7 +149,8 @@ const getStyles = () => StyleSheet.create({
 
   selectedText: {
     fontWeight: "500",
-    borderBottomColor: getColor("text"),
+    // borderBottomColor: getColor("text"),
+    borderBottomColor: getColor("accent"),
     borderBottomWidth: 1
   },
 
@@ -190,8 +204,8 @@ const getStyles = () => StyleSheet.create({
     borderBottomRightRadius: 24,
     borderWidth: 2,
     borderLeftWidth: 0,
-    // borderColor: getColor("text")
-    borderColor: "#cfcfcfac",
+    borderColor: getColor("text")
+    // borderColor: "#cfcfcfac",
   },
 
   settingsItem: {

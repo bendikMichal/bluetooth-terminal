@@ -2,7 +2,7 @@
 import { View } from "react-native";
 
 import Button from "./Button";
-import { styles } from "../consts/theme";
+import { getColor, styles } from "../consts/theme";
 
 // props:
 //   title: string
@@ -20,7 +20,7 @@ const MenuItem = (props) => {
     <View style={[styles.wrapMenu, isActive() && { marginLeft: 24 }]} >
       <Button 
         text={props.title}
-        customStyles={styles.menuItem}
+        customStyles={[styles.menuItem, isActive() && { borderColor: getColor("accent") }]}
         textStyles={styles.text}
         buttonName={props.icon}
         background={false}

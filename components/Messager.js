@@ -16,12 +16,22 @@ const Messager = (props) => {
     >
       <TextInput 
         style={[styles.text, { 
-          width: "77%", 
+          width: "78%", 
           borderWidth: 2, 
-          borderColor: "#cfcfcfac", 
+          // borderColor: "#cfcfcfac", 
+          borderColor: getColor("accent"), 
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
           borderRadius: 6, 
           paddingLeft: 24,
-          backgroundColor: getColor("fg")
+          paddingTop: 4,
+          paddingBottom: 4,
+          height: 52,
+          backgroundColor: getColor("fg"),
+          marginTop: "auto",
+          marginBottom: "auto",
+          fontFamily: "monospace"
+
         }]}
         onChangeText={setValue}
         value={value}
@@ -29,10 +39,10 @@ const Messager = (props) => {
       
       <Button
         buttonName="send"
-        buttonColor={getColor("fg")}
-        customStyles={{ marginLeft: "auto", marginRight: 16, padding: 8 }}
+        buttonColor={getColor("text")}
+        customStyles={{ marginLeft: 0, marginRight: 8, padding: 8, padding: 26, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+        // customStyles={{ position: "absolute", right: 16, bottom: 16 }}
         background={true}
-        colored={true}
         onPress={() => props.onSend(value)}
       />
     </View>

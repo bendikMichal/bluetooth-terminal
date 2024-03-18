@@ -53,8 +53,9 @@ const ClientVariableChanger = (props) => {
           padding: 1,
           paddingTop: 8,
           paddingBottom: 8,
-          borderColor: getColor("accent"),
-          borderWidth: 1,
+          borderColor: "#cfcfcf5c", 
+          borderBottomWidth: 1,
+          borderRightWidth: 1,
           borderRadius: 16,
           margin: 16,
           backgroundColor: getColor("fg")
@@ -68,10 +69,17 @@ const ClientVariableChanger = (props) => {
           <TextInput 
             style={[styles.text, { 
               width: "40%", 
-              borderWidth: 1, 
+              borderWidth: 2, 
               borderColor: "#cfcfcf5c", 
+              borderColor: getColor("accent"),
               borderRadius: 6, 
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
               paddingLeft: 24,
+              height: 52,
+              marginTop: "auto",
+              marginBottom: "auto",
+              marginLeft: 8,
               backgroundColor: getColor("bg"),
               fontFamily: "monospace"
             }]}
@@ -82,17 +90,37 @@ const ClientVariableChanger = (props) => {
           <TextInput 
             style={[styles.text, { 
               width: "40%", 
-              marginLeft: "auto",
-              marginRight: 16,
-              borderWidth: 1, 
+              marginLeft:0,
+              borderWidth: 2, 
+              borderLeftWidth: 0,
               borderColor: "#cfcfcf5c", 
-              borderRadius: 6, 
+              borderColor: getColor("accent"),
+              borderRadius: 0, 
               paddingLeft: 24,
+              height: 52,
+              marginTop: "auto",
+              marginBottom: "auto",
               backgroundColor: getColor("bg"),
               fontFamily: "monospace"
             }]}
             onChangeText={newVal => changeVariable(item, { ...item, value: newVal })}
             value={item.value}
+          />
+
+          <Button 
+            buttonName="send"
+            // buttonColor={getColor("fg")}
+            buttonColor={getColor("text")}
+            customStyles={{ 
+              marginLeft: 0, 
+              marginRight: 16, 
+              padding: 26, 
+              borderTopLeftRadius: 0, 
+              borderBottomLeftRadius: 0 
+            }}
+            background={true}
+            // colored={true}
+            onPress={() => props.onSend(`${item.name}|${item.value}`)}
           />
         </View>
 
@@ -137,14 +165,7 @@ const ClientVariableChanger = (props) => {
             }}
           />
           
-          <Button 
-            buttonName="send"
-            buttonColor={getColor("fg")}
-            customStyles={{ marginRight: 16, padding: 8 }}
-            background={true}
-            colored={true}
-            onPress={() => props.onSend(`${item.name}|${item.value}`)}
-          />
+          
         </View>
 
       </View>
@@ -173,10 +194,9 @@ const ClientVariableChanger = (props) => {
 
       <Button 
         customStyles={{ position: "absolute", right: 16, bottom: 16 }}
-        buttonColor={getColor("fg")}
+        buttonColor={getColor("text")}
         buttonName="plus"
         background={true}
-        colored={true}
         onPress={() => {
           console.log(variables, deviceId)
           setVariables({

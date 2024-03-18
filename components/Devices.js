@@ -28,7 +28,7 @@ const Devices = (props) => {
 
       }}
     >
-      {(props.started && props.connected === "server") ?
+      {(props.started && props.connected === "client") ?
 
         (<Text
           style={styles.text}
@@ -44,10 +44,12 @@ const Devices = (props) => {
 
           <Button 
             customStyles={{ position: "absolute", right: 16, bottom: 16 }}
-            buttonColor={getColor("fg")}
+            // buttonColor={getColor("fg")}
+            buttonColor={getColor("text")}
+            // buttonColor={getColor("accent")}
             buttonName="refresh"
             background={true}
-            colored={true}
+            // colored={true}
             onPress={props.refreshDevices}
           />
         </>}
