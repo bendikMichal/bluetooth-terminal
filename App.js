@@ -231,6 +231,8 @@ export default function App() {
           <Devices 
             route="/Devices" 
             refresh={refresh} 
+            connected={connected}
+            started={started}
             devices={paired} 
             onSelect={(devc) => {
               if (!devc) return

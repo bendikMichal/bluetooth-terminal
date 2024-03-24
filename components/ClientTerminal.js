@@ -25,7 +25,7 @@ const ClientTerminal = (props) => {
       <View
         style={{
           width: "100%",
-          height: "86%",
+          height: "78%",
         }}
       >
         <View
@@ -56,7 +56,7 @@ const ClientTerminal = (props) => {
           renderItem={({index, item}) => (
             <Text
               key={index}
-              style={styles.text}
+              style={[styles.text, { fontFamily: "monospace" }]}
             >
               {`${item.author ?? item.timestamp.toISOString()} - ${item.message}`}
             </Text>

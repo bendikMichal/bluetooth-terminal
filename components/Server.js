@@ -51,10 +51,10 @@ const Server = (props) => {
 
               <Button 
                 buttonName={props.started ? "stop": props.trying ? "wait" : "play"}
-                buttonColor={getColor("fg")}
+                buttonColor={getColor("text")}
                 customStyles={{ marginLeft: "auto", marginRight: 32, padding: 8 }}
                 background={true}
-                colored={true}
+                // colored={true}
                 onPress={() => {
                   if (!props.started) props.startServer(timeout)
                   else props.stopServer()
@@ -67,7 +67,7 @@ const Server = (props) => {
               renderItem={({index, item}) => (
                 <Text
                   key={index}
-                  style={styles.text}
+                  style={[styles.text, { fontFamily: "monospace" }]}
                 >
                   {`${item.author ?? item.timestamp.toISOString()} - ${item.message}`}
                 </Text>

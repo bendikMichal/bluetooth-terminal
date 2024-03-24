@@ -182,18 +182,27 @@ const ClientVariableChanger = (props) => {
     >
 
       <FlatList 
-        data={(variables ?? {})[deviceId]}
+        data={(variables ?? {})[deviceId] ?? []}
         renderItem={getItem}
       />
 
-      <View style={{
-          marginBottom: 72,
+      <View
+        style={{ 
+          position: "absolute", 
+          right: 16, 
+          bottom: 3, 
+          width: 64, 
+          height: 64,
+          borderRadius: 16,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          backgroundColor: getColor("bg")
+
         }}
-      > 
-      </View>
+      />
 
       <Button 
-        customStyles={{ position: "absolute", right: 16, bottom: 16 }}
+        customStyles={{ position: "absolute", right: 16, bottom: -5 }}
         buttonColor={getColor("text")}
         buttonName="plus"
         background={true}

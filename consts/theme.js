@@ -200,7 +200,7 @@ const getStyles = () => StyleSheet.create({
     zIndex: sidebarLayer,
     padding: 4,
     paddingTop: 32,
-    borderTopRightRadius: 24,
+    borderTopRightRadius: 12,
     borderBottomRightRadius: 24,
     borderWidth: 2,
     borderLeftWidth: 0,

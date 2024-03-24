@@ -24,7 +24,8 @@ export default function Button({
   textStyles: textStyles,
   subTextStyles: subTextStyles,
   buttonColor: buttonColor,
-  actionStyles: actionStyles
+  actionStyles: actionStyles,
+  onLongPress: onLongPress
 
 } = props) {
 
@@ -38,8 +39,8 @@ export default function Button({
   customStyles = customStyles ?? {};
   textStyles = textStyles ?? {};
   subTextStyles = subTextStyles ?? {};
-  const textActive = text === undefined ? false : true;
-  const subTextActive = subText === undefined ? false : true;
+  const textActive = text !== undefined;
+  const subTextActive = subText !== undefined;
 
   const images = {
     ["file"]: require("./../assets/buttons/file.png"),
@@ -83,6 +84,7 @@ export default function Button({
       ]}
       activeOpacity={noOpacity ? 1 : 0.5}
       onPress={onPress}
+      onLongPress={onLongPress}
     >
       { ( buttonName || uriImage ) && <Image
         style={[

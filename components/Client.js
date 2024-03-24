@@ -8,6 +8,7 @@ import { styles, getColor } from "../consts/theme";
 import Page from "./Page";
 import Pager from "./Pager";
 import ClientVariableChanger from "./ClientVariableChanger";
+import ClientActions from "./ClientActions";
 
 const Client = (props) => {
 
@@ -30,6 +31,7 @@ const Client = (props) => {
           <Pager>
             <Page name="Terminal"><ClientTerminal {...props}/></Page>
             { props.started && <Page name="Variables"><ClientVariableChanger {...props}/></Page> }
+            { props.started && <Page name="Actions"><ClientActions {...props}/></Page> }
           </Pager>
         </>}
     </View>
