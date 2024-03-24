@@ -25,7 +25,7 @@ const ClientTerminal = (props) => {
       <View
         style={{
           width: "100%",
-          height: "78%",
+          height: props.started ? "78%" : "86%",
         }}
       >
         <View
