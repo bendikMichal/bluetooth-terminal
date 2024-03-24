@@ -11,15 +11,12 @@ import { isStringNumeric } from "../utils/typeUtils";
 import { getNewUUID } from "../utils/uuidUtils";
 
 
-// _storeData("variables", JSON.stringify([{ name: "test", value: "10", packet: "test,10"}]));
-
 const ClientVariableChanger = (props) => {
 
   // { name: string, value: string }
-  // packet vould be = "name,value"
+  // packet vould be = "name|value"
   const [ variables, setVariables ] = useStateAsync(_retrieveData("variables", JSON.stringify({})), data => JSON.parse(data));
   const deviceId = props.device ? props.device.address : "";
-  // _storeData("variables", JSON.stringify({ [deviceId]: [{ name: "test", value: "10" }] }));
 
   useEffect(() => {
     if (variables) {
