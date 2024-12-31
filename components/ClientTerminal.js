@@ -52,13 +52,13 @@ const ClientTerminal = (props) => {
         </View>
 
         <FlatList 
-          data={props.messages}
+          data={[...props.messages, ...[{}, {}, {}]]}
           renderItem={({index, item}) => (
             <Text
               key={index}
               style={[styles.text, { fontFamily: "monospace" }]}
             >
-              {`${item.author ?? item.timestamp.toISOString()} - ${item.message}`}
+              {item.message ? `${item.author ?? item.timestamp.toISOString()} - ${item.message}` : ""}
             </Text>
           )}
         />

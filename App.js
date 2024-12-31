@@ -1,8 +1,8 @@
-import 'react-native-gesture-handler';
+import { GestureHandlerRootView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import BluetoothModule, { serverTimeout, serviceName, serviceUUID } from "./native_modules_wrap/BluetoothModule";
 
-import { StatusBar, StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 
 import Navbar from './components/Navbar';
@@ -155,15 +155,18 @@ export default function App() {
   // }
 
   return (
-    <TouchableWithoutFeedback onPress={() => {
-      if (ignoreClose.current) {
-        ignoreClose.current = false;
-        return;
-      }
 
-      setSidebarOpen(false);
-    }}>
-      <View style={styles.container} >
+    <GestureHandlerRootView style={styles.container} >
+      <TouchableWithoutFeedback onPress={() => {
+        if (ignoreClose.current) {
+          ignoreClose.current = false;
+          return;
+        }
+
+        setSidebarOpen(false);
+      }}>
+      {/* <View style={styles.container} > */}
+      <View>
         <StatusBar
           translucent
           backgroundColor={getColor("fg")}
@@ -171,6 +174,7 @@ export default function App() {
         <Navbar 
           title="Bluetooth terminal"
           toggleSidebar={toggleSidebar}
+          ignoreClose={ignoreClose}
           handleChangeRoute={handleChangeRoute}
           refresh={refresh}
         />
@@ -268,7 +272,8 @@ export default function App() {
           refresh={refresh}
         />
       </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </GestureHandlerRootView>
   );
 }
 

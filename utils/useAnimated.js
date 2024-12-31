@@ -3,7 +3,6 @@ import { Animated } from "react-native";
 
 
 const useAnimated = (_value, setValue) => {
-
   const animatedValue = useRef(new Animated.Value(_value)).current;
 
   const start = (toValue, duration) => {
@@ -18,7 +17,9 @@ const useAnimated = (_value, setValue) => {
 
     animation.start();
     
-    animatedValue.addListener(({ value }) => setValue(value));
+    animatedValue.addListener(({ value }) => {
+      setValue(value);
+    });
   }
 
   useEffect(() => {

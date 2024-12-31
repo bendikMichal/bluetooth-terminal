@@ -24,8 +24,7 @@ const Devices = (props) => {
   return (
     <View 
       style={{
-        height: "95%"
-
+        height: "98%"
       }}
     >
       {(props.started && props.connected === "client") ?

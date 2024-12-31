@@ -1,7 +1,7 @@
 
 import { StyleSheet } from "react-native";
 import { _retrieveData, _storeData } from "../utils/asyncStorage";
-import { sidebarW, sidebarLayer, rootLayer } from "./constants";
+import { sidebarW, sidebarLayer, rootLayer, height } from "./constants";
 
 export const darkTheme = "trueDark";
 export const lighTheme = "green";

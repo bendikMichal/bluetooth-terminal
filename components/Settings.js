@@ -1,6 +1,6 @@
 
 
-import { Switch, Text, StyleSheet } from "react-native";
+import { Switch, Text, StyleSheet, View } from "react-native";
 import { useEffect, useState } from "react";
 
 import Row from "./Row";
@@ -18,18 +18,23 @@ const Settings = (props) => {
   }
 
   return (
-    <Row style={styles.settingsItem}>
-      <Text style={styles.text}>
-        Darkmode
-      </Text>
-      <Switch 
-        name="mode"
-        trackColor={{true: getColor("accent")}}
-        thumbColor={darkmode ? getColor("title") : getColor("text")}
-        onValueChange={cahngeTheme}
-        value={darkmode}
-      />
-    </Row>
+    <View style={{
+      height: "98%"
+    }}>
+      <Row style={styles.settingsItem}>
+        <Text style={styles.text}>
+          Darkmode
+        </Text>
+        <Switch 
+          name="mode"
+          trackColor={{true: getColor("accent")}}
+          thumbColor={darkmode ? getColor("title") : getColor("text")}
+          onValueChange={cahngeTheme}
+          value={darkmode}
+        />
+      </Row>
+    </View>
+
   );
 }
 

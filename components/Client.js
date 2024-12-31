@@ -5,6 +5,7 @@ import Button from "./Button";
 import ClientTerminal from "./ClientTerminal";
 
 import { styles, getColor } from "../consts/theme";
+import { height } from "../consts/constants";
 import Page from "./Page";
 import Pager from "./Pager";
 import ClientVariableChanger from "./ClientVariableChanger";
@@ -16,7 +17,8 @@ const Client = (props) => {
     <View
       style={{
         width: "100%",
-        height: "95%",
+        // height: "95%",
+        height: "98%",
       }}
     >
       {(props.started && props.connected === "server") ?

@@ -19,7 +19,10 @@ const Navbar = (props) => {
       {props.leftChildren ?? null}
 
       <Button 
-        onPress={props.toggleSidebar}
+        onPress={() => {
+          props.ignoreClose.current = true;
+          props.toggleSidebar();
+        }}
         buttonName="menu"
         buttonColor={getColor("title")}
         background={false}

@@ -12,7 +12,9 @@ const style = {
 const Landing = (props) => {
 
   return (
-    <View>
+    <View style={{
+      height: "98%"
+    }}>
       <Text style={[styles.bigTitle, styles.centered, style]}> Bluetooth Terminal</Text>
       <Text style={{ marginLeft: 16, marginTop: -8, opacity: 0.5 }}>by noTme</Text>
       <View style={{ padding: 24 }}>
