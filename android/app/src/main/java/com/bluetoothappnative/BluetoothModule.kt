@@ -1,4 +1,4 @@
-package com.bluetoothappnative
+package com.bluetoothterminal
 
 import android.Manifest
 import android.content.pm.PackageManager

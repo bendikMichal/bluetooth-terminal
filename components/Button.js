@@ -25,7 +25,8 @@ export default function Button({
   subTextStyles: subTextStyles,
   buttonColor: buttonColor,
   actionStyles: actionStyles,
-  onLongPress: onLongPress
+  onLongPress: onLongPress,
+  size: size,
 
 } = props) {
 
@@ -43,14 +44,14 @@ export default function Button({
   const subTextActive = subText !== undefined;
 
   const images = {
-    ["file"]: require("./../assets/buttons/file.png"),
+    // ["file"]: require("./../assets/buttons/file.png"),
     ["arrow"]: require("./../assets/buttons/arrow.png"),
     ["arrowDown"]: require("./../assets/buttons/arrowDown.png"),
     ["plus"]: require("./../assets/buttons/plus.png"),
     ["minus"]: require("./../assets/buttons/minus.png"),
     ["accept"]: require("./../assets/buttons/accept.png"),
     ["cross"]: require("./../assets/buttons/cross.png"),
-    ["gallery"]: require("./../assets/buttons/gallery.png"),
+    // ["gallery"]: require("./../assets/buttons/gallery.png"),
     ["zoom-in"]: require("./../assets/buttons/zoom-in.png"),
     ["zoom-out"]: require("./../assets/buttons/zoom-out.png"),
     ["menu"]: require("./../assets/buttons/menu.png"),
@@ -70,6 +71,7 @@ export default function Button({
     ["connected"]: require("./../assets/buttons/connected.png"),
     ["disconnected"]: require("./../assets/buttons/disconnected.png"),
     ["trash"]: require("./../assets/buttons/trash.png"),
+    ["github"]: require("./../assets/buttons/github.png"),
   };
 
   return (
@@ -95,6 +97,7 @@ export default function Button({
             borderRadius: uriImage ? 8 : 0,
             transform: angle ? [{ rotate: angle + "deg" }] : [],
           },
+          (size ? { width: size.x, height: size.y } : {})
         ]}
         source={
           uriImage

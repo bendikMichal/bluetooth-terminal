@@ -25,7 +25,7 @@ const Navbar = (props) => {
         background={false}
       /> 
 
-      <Text style={[styles.title, { marginLeft: 16 }]}> 
+      <Text style={[styles.title, { marginLeft: 16 }]} onPress={() => props.handleChangeRoute({ route: "/" })}> 
         {props.title}  
       </Text>
 

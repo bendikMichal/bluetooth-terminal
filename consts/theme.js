@@ -129,6 +129,12 @@ const getStyles = () => StyleSheet.create({
     // justifyContent: "center"
   },
 
+  link: {
+    color: getColor("accent"),
+    fontStyle: "italic",
+    textDecorationLine: 'underline'
+  },
+
   text: {
     color: getColor("text"),
     fontSize: 18,
@@ -181,6 +187,12 @@ const getStyles = () => StyleSheet.create({
     flexDirection: "row"
   },
 
+  centered: {
+    justifyContent: "center",
+    alignContent: "center",
+    alignContent: "center"
+  },
+
   title: {
     // monospace, serif
     fontFamily: "Roboto",
@@ -188,6 +200,17 @@ const getStyles = () => StyleSheet.create({
     color: getColor("title"),
     fontWeight: "200",
     textAlignVertical: 'center'
+  },
+
+  bigTitle: {
+    // monospace, serif
+    fontFamily: "monospace",
+    fontSize: 30,
+    fontStyle: "italic",
+    color: getColor("title"),
+    fontWeight: "900",
+    textAlignVertical: "center",
+    padding: 16
   },
 
   sidebar: {

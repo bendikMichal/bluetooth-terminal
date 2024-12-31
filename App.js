@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 
 import BluetoothModule, { serverTimeout, serviceName, serviceUUID } from "./native_modules_wrap/BluetoothModule";
 
-import { StatusBar, StyleSheet, View } from 'react-native';
+import { StatusBar, StyleSheet, View, TouchableWithoutFeedback } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 
 import Navbar from './components/Navbar';
@@ -20,6 +20,7 @@ import { getColor, styles } from './consts/theme';
 
 
 import { DeviceEventEmitter } from 'react-native';
+import Landing from './components/Landing';
 
 DeviceEventEmitter.addListener('InitCallbackEvent', () => console.log("init"));
 
@@ -48,6 +49,8 @@ export default function App() {
     server: [],
     client: []
   });
+
+  const ignoreClose = useRef(false);
 
   const startClient = () => {
     if (started || !device) return
@@ -152,108 +155,120 @@ export default function App() {
   // }
 
   return (
-    <View style={styles.container} >
-      <StatusBar
-        translucent
-        backgroundColor={getColor("fg")}
-      />
-      <Navbar 
-        title="Veri gud blutut epp"
-        toggleSidebar={toggleSidebar}
-        refresh={refresh}
-      />
+    <TouchableWithoutFeedback onPress={() => {
+      if (ignoreClose.current) {
+        ignoreClose.current = false;
+        return;
+      }
 
-      <Sidebar 
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        route={route}
-        setRoute={handleChangeRoute}
-        menuItems={[
-          // { title: "Terminal", route: "/Terminal", icon: "terminal" },
-          { title: "Client", route: "/Client", icon: "client" },
-          { title: "Server", route: "/Server", icon: "server" },
-          { title: "Devices", route: "/Devices", icon: "devices" },
-          { title: "Settings", route: "/Settings", icon: "settings" },
-          { title: "Info", route: "/Info", icon: "info" },
-        ]}
-        refresh={refresh}
-      />
+      setSidebarOpen(false);
+    }}>
+      <View style={styles.container} >
+        <StatusBar
+          translucent
+          backgroundColor={getColor("fg")}
+        />
+        <Navbar 
+          title="Bluetooth terminal"
+          toggleSidebar={toggleSidebar}
+          handleChangeRoute={handleChangeRoute}
+          refresh={refresh}
+        />
 
-      <Navigation 
-        route={route}
-        routes={[
-          // <Terminal route="/Terminal" refresh={refresh} key="0"/>,
-          <Client route="/Client" refresh={refresh} device={device} key="0" 
-            connected={connected}
-            started={started}
-            trying={tryStart}
-            messages={messages.client}
-            startClient={startClient}
-            stopClient={stopClient}
-            onGotoDevices={() => handleChangeRoute({ title: "Devices", route: "/Devices", icon: "devices" })}
-            onSend={val => {
-              let msg = (String(val) ?? "") + "\n";
-              if (started) {
-                BluetoothModule?.write(msg);
-                setMessages(
-                  {
-                    ...messages,
-                    client: [...messages.client, {
-                      author: "You",
-                      message: msg
-                    }]
-                  });
-              }
-            }}
-          />,
-          <Server route="/Server" refresh={refresh} key="0.1"
-            connected={connected}
-            started={started}
-            trying={tryStart}
-            messages={messages.server}
-            startServer={startServer}
-            stopServer={stopServer}
-            onSend={val => {
-              let msg = (String(val) ?? "") + "\n";
-              if (started) {
-                BluetoothModule?.write(msg);
-                setMessages(
-                  {
-                    ...messages,
-                    server: [...messages.server, {
-                      author: "You",
-                      message: msg
-                    }]
-                  });
-              }
-            }}
-          />,
-          <Devices 
-            route="/Devices" 
-            refresh={refresh} 
-            connected={connected}
-            started={started}
-            devices={paired} 
-            onSelect={(devc) => {
-              if (!devc) return
-              if (devc.address !== device?.address) setMessages({
-                ...messages,
-                client: []
-              });
-              setDevice(devc);
-            }}
-            refreshDevices={() => BluetoothModule?.listPaired(res => {
-              console.log("Paired: ", res)
-              setPaired(res);
-            })}
-            key="1"
-          />,
-          <Settings route="/Settings" setRefresh={setRefresh} refresh={refresh} key="2"/>,
-          <Info route="/Info" refresh={refresh} key="3"/>,
-        ]}
-        refresh={refresh}
-      />
-    </View>
+        <Sidebar 
+          open={sidebarOpen}
+          ignoreClose={ignoreClose}
+          onClose={() => setSidebarOpen(false)}
+          route={route}
+          setRoute={handleChangeRoute}
+          menuItems={[
+            // { title: "Terminal", route: "/Terminal", icon: "terminal" },
+            { title: "Client", route: "/Client", icon: "client" },
+            { title: "Server", route: "/Server", icon: "server" },
+            { title: "Devices", route: "/Devices", icon: "devices" },
+            { title: "Settings", route: "/Settings", icon: "settings" },
+            { title: "Info", route: "/Info", icon: "info" },
+          ]}
+          refresh={refresh}
+        />
+
+        <Navigation 
+          route={route}
+          routes={[
+            <Landing route="/" refresh={refresh} key="-1"/>,
+            // <Terminal route="/Terminal" refresh={refresh} key="0"/>,
+            <Client route="/Client" refresh={refresh} device={device} key="0" 
+              connected={connected}
+              started={started}
+              trying={tryStart}
+              messages={messages.client}
+              startClient={startClient}
+              stopClient={stopClient}
+              onGotoDevices={() => handleChangeRoute({ title: "Devices", route: "/Devices", icon: "devices" })}
+              onSend={val => {
+                let msg = (String(val) ?? "") + "\n";
+                if (started) {
+                  BluetoothModule?.write(msg);
+                  setMessages(
+                    {
+                      ...messages,
+                      client: [...messages.client, {
+                        author: "You",
+                        message: msg
+                      }]
+                    });
+                }
+              }}
+            />,
+            <Server route="/Server" refresh={refresh} key="0.1"
+              connected={connected}
+              started={started}
+              trying={tryStart}
+              messages={messages.server}
+              startServer={startServer}
+              stopServer={stopServer}
+              onSend={val => {
+                let msg = (String(val) ?? "") + "\n";
+                if (started) {
+                  BluetoothModule?.write(msg);
+                  setMessages(
+                    {
+                      ...messages,
+                      server: [...messages.server, {
+                        author: "You",
+                        message: msg
+                      }]
+                    });
+                }
+              }}
+            />,
+            <Devices 
+              route="/Devices" 
+              refresh={refresh} 
+              connected={connected}
+              started={started}
+              devices={paired} 
+              onSelect={(devc) => {
+                if (!devc) return
+                if (devc.address !== device?.address) setMessages({
+                  ...messages,
+                  client: []
+                });
+                setDevice(devc);
+              }}
+              refreshDevices={() => BluetoothModule?.listPaired(res => {
+                console.log("Paired: ", res)
+                setPaired(res);
+              })}
+              key="1"
+            />,
+            <Settings route="/Settings" setRefresh={setRefresh} refresh={refresh} key="2"/>,
+            <Info route="/Info" refresh={refresh} key="3"/>,
+          ]}
+          refresh={refresh}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

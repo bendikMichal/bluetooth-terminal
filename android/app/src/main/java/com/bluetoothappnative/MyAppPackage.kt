@@ -1,4 +1,4 @@
-package com.bluetoothappnative
+package com.bluetoothterminal
 
 import android.view.View
 import com.facebook.react.ReactPackage

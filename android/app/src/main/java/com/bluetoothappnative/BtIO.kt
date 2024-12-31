@@ -1,5 +1,5 @@
 
-package com.bluetoothappnative
+package com.bluetoothterminal
 
 import com.facebook.react.bridge.Callback
 

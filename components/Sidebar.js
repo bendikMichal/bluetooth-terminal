@@ -1,5 +1,5 @@
 
-import { StyleSheet, View, Text, Animated } from "react-native";
+import { StyleSheet, View, Text, Animated, TouchableWithoutFeedback } from "react-native";
 import { useEffect, useRef, useState } from "react";
 
 import { sidebarW } from "../consts/constants";
